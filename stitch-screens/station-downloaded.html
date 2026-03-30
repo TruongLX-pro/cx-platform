@@ -1,0 +1,655 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard quáº£n trá» tráº£i nghiá»m khÃ¡ch hÃ ng - Offline</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#2563eb",
+              "primary-hover": "#1d4ed8",
+              "surface": "#f8fafc",
+              "surface-container": "#FFFFFF",
+              "outline": "#e2e8f0",
+              "error": "#EA2D2D",
+              "warning": "#FF9E08"
+            },
+            fontFamily: {
+              "sans": ["Inter", "sans-serif"],
+              "headline": ["Inter", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              "DEFAULT": "0.5rem",
+              "lg": "0.75rem",
+              "xl": "1rem",
+              "2xl": "1.25rem",
+              "3xl": "1.5rem",
+              "full": "9999px"
+            },
+            boxShadow: {
+              "subtle": "0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05)",
+              "premium": "0 4px 6px -1px rgb(0 0 0 / 0.03), 0 2px 4px -2px rgb(0 0 0 / 0.03)",
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-item-active { background-color: #ffffff; color: #2563eb; font-weight: 600; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        .glass-tab { backdrop-filter: blur(8px); }
+    </style>
+</head><body class="bg-surface text-slate-900 selection:bg-primary/10 selection:text-primary">
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#f1f5f9] flex flex-col border-r border-slate-200 z-50">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-10">
+<div class="w-12 h-12 flex items-center justify-center rounded-xl overflow-hidden"><img alt="Mascot" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uj-fNGi2xG0TVVN7s9_2bmcAv79Zpl7QslirqOYdi61KUwZhIxdExe1wvBl2-BMCoP5wPnK-nIhKj4RALK582m4_SjuNIWursTlA6tvTbH3fp5339Tm2ePY1wXmfrYY4YWQZ_6Ryf4Op98BswYwM6ALPJb3xG_I3Ys2Wec64oCbvfiz1-K63K_AOZXOdldqrIEzXCic485N8Ftduf5wJWB4QcLDJc2r3Wi2hfe-1MD8sEdVhTwsZTP_SgaStj7L4QFC9laI-f5RNek" style=""/></div>
+<div class="flex-1"><img alt="RinoEdu" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uh-8vgEo81FuMcXvZfb4miJJkaQhQq-WNe4bLW2crK3bnVD-1L5dizI9KYkjDrIzzkDNN1dzlStUD-d53CFDqG7-1nvzxB-RZfK9Lg9kCXCkK9QUz2qENEwrEuCMEvirHKyk-wm2r89OjcIvf2rv2oD8fRLNK5dcs9JMHi64tsnziTcxe9w0XadXlxz1iED4cj-wYIEBMaNO4FEmhnw5WFeBo9xCFTIR7goZKYMc5Mzd_ZxxznPjcPSt2nRc4eNu0WPGaQr_02uKOg" style=""/></div>
+</div>
+<nav class="space-y-1.5">
+<a class="flex items-center gap-3 px-4 py-2.5 sidebar-item-active rounded-lg transition-all" href="#" style="">
+<span class="material-symbols-outlined text-[20px]" style="">dashboard</span>
+<span class="text-[13px]" style="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-500 hover:bg-white/50 hover:text-slate-800 rounded-lg transition-all" href="#" style="">
+<span class="material-symbols-outlined text-[20px]" style="">ads_click</span>
+<span class="text-[13px] font-medium" style="">Äiá»m cháº¡m</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-500 hover:bg-white/50 hover:text-slate-800 rounded-lg transition-all" href="#" style="">
+<span class="material-symbols-outlined text-[20px]" style="">quiz</span>
+<span class="text-[13px] font-medium" style="">Template kháº£o sÃ¡t</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-500 hover:bg-white/50 hover:text-slate-800 rounded-lg transition-all" href="#" style="">
+<span class="material-symbols-outlined text-[20px]" style="">chat_bubble</span>
+<span class="text-[13px] font-medium" style="">Dá»¯ liá»u pháº£n há»i</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-500 hover:bg-white/50 hover:text-slate-800 rounded-lg transition-all" href="#" style="">
+<span class="material-symbols-outlined text-[20px]" style="">bar_chart</span>
+<span class="text-[13px] font-medium" style="">PhÃ¢n tÃ­ch</span>
+</a>
+</nav>
+</div>
+<!-- User Card at bottom -->
+<div class="mt-auto p-4 border-t border-slate-200">
+<div class="flex items-center gap-3 p-2 hover:bg-white/50 rounded-xl transition-colors cursor-pointer group">
+<div class="w-9 h-9 rounded-lg bg-primary/10 overflow-hidden ring-2 ring-white shadow-sm">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZdhlsK0Q8vq93uS7igi9ylFhtmQJK1ty_U_S1nmuqA1oisrHrXtNz9ezLWymKI2KemxOX7CfUPajuDFvWXxzJNshc7k8ZuuUBbhDKySvKCJgf9MIWDTGnTX0Y_u-2UGmNdpv6WRCXweMA0I8UcJV4hi2DFT-ypjJO4GserVNrCF5bwPMixTtxXJgw-6dUPgjhiFoHefsAQplPy5Us9Szfx_Xsb15g6V27uDR6HKLnqNPs1_UKF80nsMXv3AITUFC7xuKJswhDVZdd" style=""/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-bold text-slate-800 truncate" style="">Admin User</p>
+<p class="text-[10px] text-slate-500 truncate" style="">admin@cem.com</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-sm group-hover:text-slate-600" style="">more_vert</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 ml-64 min-w-0 flex flex-col bg-surface min-h-screen">
+<!-- Top Header -->
+<header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 h-16 flex items-center">
+<div class="flex justify-between items-center w-full px-14">
+<div class="flex items-center">
+<span class="text-sm font-bold text-slate-800" style="">CX Platform</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<input class="bg-slate-100 border-none rounded-lg px-4 py-2 text-xs w-72 focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all outline-none" placeholder="TÃ¬m kiáº¿m há» thá»ng..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-400 text-sm" style="">search</span>
+</div>
+<div class="flex items-center gap-4 border-l border-slate-200 pl-6">
+<button class="text-slate-400 hover:text-slate-600 transition-colors relative" style="">
+<span class="material-symbols-outlined" style="">notifications</span>
+<span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-error rounded-full border border-white"></span>
+</button>
+<button class="text-slate-400 hover:text-slate-600 transition-colors" style="">
+<span class="material-symbols-outlined" style="">help_outline</span>
+</button>
+<button class="text-slate-400 hover:text-slate-600 transition-colors" style="">
+<span class="material-symbols-outlined" style="">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<div class="py-8 px-14 space-y-8 max-w-[1600px] mx-auto w-full">
+<!-- Page Header -->
+<div class="space-y-6">
+<div class="flex justify-between items-start">
+<div>
+<h1 class="text-3xl font-extrabold text-slate-900 leading-tight tracking-tight mb-2" style="">Dashboard quáº£n trá» tráº£i nghiá»m khÃ¡ch hÃ ng - Offline</h1>
+<p class="text-slate-500 font-medium text-sm" style="">Theo dÃµi nhanh cháº¥t lÆ°á»£ng tráº£i nghiá»m khÃ¡ch hÃ ng theo mÃ´ hÃ¬nh Offline</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-white border border-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm flex items-center gap-2 hover:bg-slate-50 transition-all shadow-subtle" style="">
+<span class="material-symbols-outlined text-[18px]" style="">refresh</span>
+                        LÃ m má»i
+                    </button>
+<button class="bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary-hover hover:-translate-y-0.5 transition-all" style="">
+<span class="material-symbols-outlined text-[18px]" style="">ios_share</span>
+                        Xuáº¥t bÃ¡o cÃ¡o
+                    </button>
+</div>
+</div>
+<!-- Tab Switcher -->
+<div class="flex items-center bg-slate-200/50 p-1 rounded-xl w-fit">
+<button class="px-8 py-2 text-slate-500 font-bold text-[13px] hover:text-slate-700 transition-all rounded-lg" style="">Gia sÆ° Tutor</button>
+<button class="px-8 py-2 bg-white text-primary font-bold text-[13px] rounded-lg shadow-sm" style="">Station</button>
+<button class="px-8 py-2 text-slate-500 font-bold text-[13px] hover:text-slate-700 transition-all rounded-lg" style="">Rino Digi</button></div>
+</div>
+<!-- Filter Bar -->
+<section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-premium">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6 mb-6">
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" style="">Tá»« ngÃ y</label>
+<input class="w-full border border-slate-200 text-[13px] rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all" type="date" value="2023-10-01"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" style="">Äáº¿n ngÃ y</label>
+<input class="w-full border border-slate-200 text-[13px] rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none transition-all" type="date" value="2023-10-31"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" style="">Trung tÃ¢m</label>
+<select class="w-full border border-slate-200 text-[13px] rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none appearance-none bg-no-repeat bg-[right_12px_center] transition-all" style='background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E"); background-size: 16px;'>
+<option>Táº¥t cáº£ cÆ¡ sá»</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" style="">ChÆ°Æ¡ng trÃ¬nh</label>
+<select class="w-full border border-slate-200 text-[13px] rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none appearance-none bg-no-repeat bg-[right_12px_center] transition-all" style='background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E"); background-size: 16px;'>
+<option>Táº¥t cáº£ chÆ°Æ¡ng trÃ¬nh</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" style="">LOáº I PHáº¢N Há»I</label>
+<select class="w-full border border-slate-200 text-[13px] rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none appearance-none bg-no-repeat bg-[right_12px_center] transition-all" style='background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E"); background-size: 16px;'>
+<option>Táº¥t cáº£</option>
+<option>Kháº£o sÃ¡t</option>
+<option>Khiáº¿u náº¡i</option>
+<option>BÃ¡o lá»i</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" style="">Touchpoint</label>
+<select class="w-full border border-slate-200 text-[13px] rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none appearance-none bg-no-repeat bg-[right_12px_center] transition-all" style='background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E"); background-size: 16px;'>
+<option>Táº¥t cáº£ Äiá»m cháº¡m</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1" style="">Loáº¡i kháº£o sÃ¡t</label>
+<select class="w-full border border-slate-200 text-[13px] rounded-lg py-2.5 px-3 focus:ring-2 focus:ring-primary/10 focus:border-primary outline-none appearance-none bg-no-repeat bg-[right_12px_center] transition-all" style='background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E"); background-size: 16px;'>
+<option>Táº¥t cáº£ loáº¡i</option>
+</select>
+</div>
+</div>
+<div class="flex justify-between items-center pt-5 border-t border-slate-100">
+<button class="text-primary text-[13px] font-bold flex items-center gap-1.5 hover:opacity-80 transition-opacity" style="">
+<span class="material-symbols-outlined text-lg" style="">filter_list</span>
+                        Bá» lá»c nÃ¢ng cao
+                    </button>
+<div class="flex gap-4 items-center">
+<button class="text-slate-400 text-[13px] font-bold hover:text-slate-600 transition-colors" style="">Äáº·t láº¡i</button>
+<button class="px-10 py-2.5 text-[13px] font-bold rounded-xl shadow-lg shadow-primary/5 hover:-translate-y-0.5 transition-all bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] hover:bg-[#dbeafe] hover:text-[#1d4ed8]" style="">Ãp dá»¥ng</button>
+</div>
+</div>
+</section>
+<!-- KPI Row -->
+<section class="grid grid-cols-1 md:grid-cols-5 gap-6">
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-premium group hover:border-primary/30 transition-all">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3" style="">Äiá»m kháº£o sÃ¡t TB</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-primary" style="">4.2<span class="text-lg font-medium text-slate-300" style="">/5.0</span></span>
+<span class="text-green-600 text-[10px] font-bold flex items-center gap-0.5 bg-green-50 px-1.5 py-0.5 rounded-full" style="">
+<span class="material-symbols-outlined text-[12px] font-bold" style="">trending_up</span> +0.2
+                        </span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-premium group hover:border-primary/30 transition-all">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3" style="">Tá»ng kháº£o sÃ¡t</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-slate-800" style="">8,420</span>
+<span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight" style="">kháº£o sÃ¡t há»£p lá»</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-premium group hover:border-warning/30 transition-all">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3" style="">Tá»ng khiáº¿u náº¡i</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-warning" style="">42</span>
+<span class="text-error text-[10px] font-bold flex items-center gap-0.5 bg-error/5 px-2 py-0.5 rounded-full" style="">
+<span class="material-symbols-outlined text-[12px] font-bold" style="">warning</span> 8 kháº©n cáº¥p
+                        </span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-premium group hover:border-primary/30 transition-all">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3" style="">thá»i gian Xá»­ lÃ½ khiáº¿u náº¡i TB</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-slate-800" style="">1.4h</span>
+<span class="text-green-600 text-[10px] font-bold uppercase bg-green-50 px-2 py-0.5 rounded-full" style="">Äáº¡t má»¥c tiÃªu</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-2xl border-l-4 border-l-error border-y border-r border-slate-200 shadow-premium group hover:border-error/30 transition-all">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3" style="">Tá»NG BÃO Lá»I</p>
+<div class="flex flex-col">
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-extrabold text-slate-800" style="">156</span>
+<span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight" style="">TRONG Ká»² Lá»C</span>
+</div>
+<div class="mt-2">
+<span class="text-error text-[10px] font-bold flex items-center gap-0.5 bg-error/5 px-2 py-0.5 rounded-full w-fit" style="">
+<span class="material-symbols-outlined text-[12px] font-bold" style="">trending_up</span> â 12% SO Vá»I Ká»² TRÆ¯á»C
+                        </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Trung tÃ¢m rá»§i ro -->
+<section class="bg-white rounded-3xl border border-slate-200 shadow-premium overflow-hidden">
+<div class="p-6 border-b border-slate-100 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-error/5 flex items-center justify-center text-error border border-error/10">
+<span class="material-symbols-outlined" style='font-variation-settings: "FILL" 1;'>location_on</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-800" style="">Trung tÃ¢m rá»§i ro</h3>
+<p class="text-[11px] text-slate-500 font-medium mt-0.5" style="">PhÃ¢n tÃ­ch rá»§i ro váº­n hÃ nh offline theo cÆ¡ sá»</p>
+</div>
+</div>
+<div class="flex gap-6 items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider" style="">Cáº§n can thiá»p ngay</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-warning"></span>
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider" style="">Cáº§n theo dÃµi</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider" style="">á»n Äá»nh</span>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50/50">
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Trung tÃ¢m</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center" style="">Äiá»m TB</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center" style="">Tá»· lá» tiÃªu cá»±c</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center" style="">Khiáº¿u náº¡i</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Má»©c rá»§i ro</th>
+<th class="px-6 py-4" style=""></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/80 transition-all cursor-pointer group">
+<td class="px-6 py-5 text-[13px] font-bold text-slate-800" style="">CÆ¡ sá» Linh ÄÃ m</td>
+<td class="px-6 py-5 text-[13px] font-medium text-slate-600 text-center" style="">3.2/5</td>
+<td class="px-6 py-5 text-[13px] text-error font-bold text-center" style="">18.4%</td>
+<td class="px-6 py-5 text-[13px] font-medium text-slate-600 text-center" style="">12</td>
+<td class="px-6 py-5" style="">
+<span class="px-3 py-1 bg-error/5 text-error text-[10px] font-bold rounded-lg uppercase tracking-wider border border-error/10" style="">Cáº§n can thiá»p ngay</span>
+</td>
+<td class="px-6 py-5 text-right" style=""><span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors" style="">chevron_right</span></td>
+</tr>
+<tr class="hover:bg-slate-50/80 transition-all cursor-pointer group">
+<td class="px-6 py-5 text-[13px] font-bold text-slate-800" style="">CÆ¡ sá» Nguyá»n TuÃ¢n</td>
+<td class="px-6 py-5 text-[13px] font-medium text-slate-600 text-center" style="">3.8/5</td>
+<td class="px-6 py-5 text-[13px] text-warning font-bold text-center" style="">9.2%</td>
+<td class="px-6 py-5 text-[13px] font-medium text-slate-600 text-center" style="">6</td>
+<td class="px-6 py-5" style="">
+<span class="px-3 py-1 bg-warning/5 text-warning text-[10px] font-bold rounded-lg uppercase tracking-wider border border-warning/10" style="">Cáº§n theo dÃµi</span>
+</td>
+<td class="px-6 py-5 text-right" style=""><span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors" style="">chevron_right</span></td>
+</tr>
+<tr class="hover:bg-slate-50/80 transition-all cursor-pointer group">
+<td class="px-6 py-5 text-[13px] font-bold text-slate-800" style="">CÆ¡ sá» Long BiÃªn</td>
+<td class="px-6 py-5 text-[13px] font-medium text-slate-600 text-center" style="">4.5/5</td>
+<td class="px-6 py-5 text-[13px] text-primary font-bold text-center" style="">2.1%</td>
+<td class="px-6 py-5 text-[13px] font-medium text-slate-600 text-center" style="">1</td>
+<td class="px-6 py-5" style="">
+<span class="px-3 py-1 bg-primary/5 text-primary text-[10px] font-bold rounded-lg uppercase tracking-wider border border-primary/10" style="">á»n Äá»nh</span>
+</td>
+<td class="px-6 py-5 text-right" style=""><span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors" style="">chevron_right</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Survey Blocks -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Kháº£o sÃ¡t phá»¥ huynh -->
+<div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-premium">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="text-lg font-bold text-slate-800" style="">Kháº£o sÃ¡t phá»¥ huynh</h3>
+<p class="text-[11px] text-slate-400 font-medium" style="">HÃ i lÃ²ng theo tiÃªu chÃ­</p>
+</div>
+<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded" style="">Äiá»m tb (1-5)</span>
+</div>
+<div class="space-y-8">
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">GiÃ¡o viÃªn</span>
+<span class="text-primary" style="">4.2</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[84%]"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">ChÆ°Æ¡ng trÃ¬nh há»c</span>
+<span class="text-primary" style="">3.9</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary/60 rounded-full w-[78%]"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">NhÃ¢n viÃªn chÄm sÃ³c</span>
+<span class="text-primary" style="">4.5</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary/80 rounded-full w-[90%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Kháº£o sÃ¡t há»c sinh -->
+<div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-premium">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="text-lg font-bold text-slate-800" style="">Kháº£o sÃ¡t há»c sinh</h3>
+<p class="text-[11px] text-slate-400 font-medium" style="">HÃ i lÃ²ng theo tráº£i nghiá»m</p>
+</div>
+<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded" style="">Äiá»m tb (1-5)</span>
+</div>
+<div class="space-y-8">
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">GiÃ¡o viÃªn</span>
+<span class="text-primary" style="">4.6</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[92%]"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">Ná»i dung bÃ i há»c</span>
+<span class="text-primary" style="">4.1</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary/60 rounded-full w-[82%]"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">CÆ¡ sá» váº­t cháº¥t</span>
+<span class="text-warning" style="">3.7</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-warning rounded-full w-[74%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Cháº¥t lÆ°á»£ng theo chÆ°Æ¡ng trÃ¬nh -->
+<div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-premium">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="text-lg font-bold text-slate-800" style="">Theo chÆ°Æ¡ng trÃ¬nh</h3>
+<p class="text-[11px] text-slate-400 font-medium" style="">PhÃ¢n tÃ¡ch theo mÃ´n há»c</p>
+</div>
+<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded" style="">Äiá»m tb (1-5)</span>
+</div>
+<div class="space-y-8">
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<div class="flex items-center gap-2">
+<span class="text-slate-500" style="">Tiáº¿ng Anh Cam</span>
+<span class="text-green-600 text-[9px] font-bold bg-green-50 px-1 rounded" style="">â 4%</span>
+</div>
+<span class="text-primary" style="">4.4</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-[88%]"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<div class="flex items-center gap-2">
+<span class="text-slate-500" style="">Tiáº¿ng Anh Station</span>
+<span class="text-slate-400 text-[9px] font-bold bg-slate-50 px-1 rounded" style="">â 0%</span>
+</div>
+<span class="text-warning" style="">3.5</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-warning rounded-full w-[70%]"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<div class="flex items-center gap-2">
+<span class="text-slate-500" style="">Math Advanced</span>
+<span class="text-error text-[9px] font-bold bg-error/5 px-1 rounded" style="">â 2%</span>
+</div>
+<span class="text-error" style="">2.8</span>
+</div>
+<div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full w-[56%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Touchpoint Risk -->
+<section class="bg-white rounded-3xl border border-slate-200 shadow-premium overflow-hidden">
+<div class="p-6 border-b border-slate-100 flex justify-between items-center">
+<div>
+<h3 class="text-xl font-bold text-slate-800" style="">Äiá»m cháº¡m rá»§i ro Offline</h3>
+<p class="text-[11px] text-slate-400 font-medium mt-0.5" style="">PhÃ¢n tÃ­ch sÃ¢u cÃ¡c Äiá»m giao tiáº¿p thá»±c táº¿</p>
+</div>
+<button class="text-primary text-[11px] font-bold uppercase tracking-widest bg-primary/5 px-4 py-2 rounded-xl hover:bg-primary/10 transition-all" style="">Xem chi tiáº¿t</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-slate-50/50">
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Äiá»m cháº¡m</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right" style="">LÆ°á»£ng PH</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right" style="">Äiá»m TB</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right" style="">TiÃªu cá»±c (%)</th>
+<th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Æ¯u tiÃªn</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/80 transition-all cursor-pointer">
+<td class="px-6 py-5 text-[13px] font-bold text-slate-800" style="">Khu vá»±c sáº£nh chá» &amp; Check-in</td>
+<td class="px-6 py-5 text-[13px] text-right font-medium text-slate-500" style="">1,204</td>
+<td class="px-6 py-5 text-right" style=""><span class="inline-block bg-warning/10 text-warning px-2.5 py-1 rounded-lg text-[12px] font-bold" style="">3.4</span></td>
+<td class="px-6 py-5 text-[13px] text-right text-error font-bold" style="">12.5%</td>
+<td class="px-6 py-5" style=""><span class="text-[10px] font-bold text-error uppercase bg-error/5 px-2 py-0.5 rounded border border-error/10" style="">Cao</span></td>
+</tr>
+<tr class="hover:bg-slate-50/80 transition-all cursor-pointer">
+<td class="px-6 py-5 text-[13px] font-bold text-slate-800" style="">TÆ°Æ¡ng tÃ¡c táº¡i bÃ£i Äá» xe</td>
+<td class="px-6 py-5 text-[13px] text-right font-medium text-slate-500" style="">850</td>
+<td class="px-6 py-5 text-right" style=""><span class="inline-block bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[12px] font-bold" style="">3.7</span></td>
+<td class="px-6 py-5 text-[13px] text-right text-warning font-bold" style="">9.2%</td>
+<td class="px-6 py-5" style=""><span class="text-[10px] font-bold text-warning uppercase bg-warning/5 px-2 py-0.5 rounded border border-warning/10" style="">Trung bÃ¬nh</span></td>
+</tr>
+<tr class="hover:bg-slate-50/80 transition-all cursor-pointer">
+<td class="px-6 py-5 text-[13px] font-bold text-slate-800" style="">Tráº£i nghiá»m nhÃ  vá» sinh</td>
+<td class="px-6 py-5 text-[13px] text-right font-medium text-slate-500" style="">620</td>
+<td class="px-6 py-5 text-right" style=""><span class="inline-block bg-error/10 text-error px-2.5 py-1 rounded-lg text-[12px] font-bold" style="">3.1</span></td>
+<td class="px-6 py-5 text-[13px] text-right text-error font-bold" style="">15.8%</td>
+<td class="px-6 py-5" style=""><span class="text-[10px] font-bold text-error uppercase bg-error/5 px-2 py-0.5 rounded border border-error/10 underline underline-offset-2" style="">Kháº©n cáº¥p</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Complaints Analysis Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Khiáº¿u náº¡i theo Äá»i tÆ°á»£ng -->
+<div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-premium flex flex-col items-center">
+<h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-8 w-full text-center" style="">Khiáº¿u náº¡i theo Äá»i tÆ°á»£ng</h3>
+<div class="relative w-44 h-44">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#f1f5f9" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#EA2D2D" stroke-dasharray="40 100" stroke-linecap="round" stroke-width="3.2"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#FF9E08" stroke-dasharray="30 100" stroke-dashoffset="-40" stroke-linecap="round" stroke-width="3.2"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#2563eb" stroke-dasharray="20 100" stroke-dashoffset="-70" stroke-linecap="round" stroke-width="3.2"></circle>
+<circle cx="18" cy="18" fill="transparent" r="16" stroke="#94A3B8" stroke-dasharray="10 100" stroke-dashoffset="-90" stroke-linecap="round" stroke-width="3.2"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-4xl font-extrabold text-slate-800" style="">42</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" style="">Case</span>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-y-4 w-full">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-md bg-error"></span>
+<span class="text-[10px] font-bold text-slate-500 uppercase" style="">GiÃ¡o viÃªn: 40%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-md bg-warning"></span>
+<span class="text-[10px] font-bold text-slate-500 uppercase" style="">Lá» trÃ¬nh: 30%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-md bg-primary"></span>
+<span class="text-[10px] font-bold text-slate-500 uppercase" style="">CSKH: 20%</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-md bg-slate-400"></span>
+<span class="text-[10px] font-bold text-slate-500 uppercase" style="">KhÃ¡c: 10%</span>
+</div>
+</div>
+</div>
+<!-- Tráº¡ng thÃ¡i xá»­ lÃ½ -->
+<div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-premium">
+<h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-8" style="">Tráº¡ng thÃ¡i xá»­ lÃ½</h3>
+<div class="space-y-8">
+<div class="space-y-2.5">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">ÄÃ£ tiáº¿p nháº­n</span>
+<span class="text-slate-800" style="">19% <span class="text-slate-300 ml-1 font-medium" style="">(8)</span></span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-slate-400 h-full w-[19%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2.5">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">Äang xá»­ lÃ½</span>
+<span class="text-warning" style="">28% <span class="text-slate-300 ml-1 font-medium" style="">(12)</span></span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-warning h-full w-[28%] rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2.5">
+<div class="flex justify-between text-[11px] font-bold uppercase tracking-wider">
+<span class="text-slate-500" style="">ÄÃ£ hoÃ n thÃ nh</span>
+<span class="text-primary" style="">53% <span class="text-slate-300 ml-1 font-medium" style="">(22)</span></span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[53%] rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Thá»i gian xá»­ lÃ½ -->
+<div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-premium flex flex-col">
+<h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-8 text-center" style="">Thá»i gian xá»­ lÃ½</h3>
+<div class="flex-1 h-32 flex items-end justify-between gap-2 mb-6 px-2">
+<div class="flex-1 bg-primary/20 rounded-lg h-[30%] hover:bg-primary/30 transition-all cursor-help" title="DÆ°á»i 1h"></div>
+<div class="flex-1 bg-primary/40 rounded-lg h-[50%] hover:bg-primary/50 transition-all cursor-help" title="1-2h"></div>
+<div class="flex-1 bg-primary rounded-lg h-[85%] hover:bg-primary-hover transition-all cursor-help" title="2-4h"></div>
+<div class="flex-1 bg-warning/60 rounded-lg h-[40%] hover:bg-warning transition-all cursor-help" title="4-8h"></div>
+<div class="flex-1 bg-error/40 rounded-lg h-[15%] hover:bg-error transition-all cursor-help" title="TrÃªn 8h"></div>
+</div>
+<div class="flex justify-between text-[9px] font-bold text-slate-400 uppercase tracking-tighter border-b border-slate-50 pb-4 mb-4">
+<span class="" style="">&lt; 1h</span><span class="" style="">1-2h</span><span class="" style="">2-4h</span><span class="" style="">4-8h</span><span class="" style="">&gt; 8h</span>
+</div>
+<div class="bg-slate-50 p-4 rounded-2xl text-center border border-slate-100">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1" style="">Má»¥c tiÃªu: &lt; 2h</p>
+<p class="text-sm font-extrabold text-primary" style="">Hiá»n táº¡i: 1.4h <span class="text-green-600 ml-1 font-bold" style="">(Äáº¡t)</span></p>
+</div>
+</div>
+</div>
+<!-- Bottom Rankings -->
+<section class="bg-white rounded-3xl border border-slate-200 shadow-premium overflow-hidden">
+<div class="p-6 border-b border-slate-100 flex items-center gap-4">
+<div class="p-3 bg-error/5 rounded-2xl text-error border border-error/10">
+<span class="material-symbols-outlined font-bold" style="">trending_down</span>
+</div>
+<div>
+<h3 class="text-xl font-bold text-slate-800" style="">Bottom 5 Cáº£nh bÃ¡o</h3>
+<p class="text-[11px] text-slate-400 font-medium" style="">Äá»i tÆ°á»£ng cÃ³ Äiá»m hÃ i lÃ²ng tháº¥p nháº¥t ká»³</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 divide-x divide-slate-100">
+<!-- Bottom 5 GiÃ¡o viÃªn -->
+<div class="p-6">
+<h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-1" style="">GiÃ¡o viÃªn</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-all border border-transparent hover:border-slate-100">
+<span class="text-[13px] font-bold text-slate-700" style="">Nguyá»n VÄn A <span class="text-[10px] font-medium text-slate-400 block" style="">Má»¹ ÄÃ¬nh</span></span>
+<span class="text-[13px] font-extrabold text-error bg-error/5 px-2 py-0.5 rounded-lg" style="">3.2/5</span>
+</div>
+<div class="flex justify-between items-center group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-all border border-transparent hover:border-slate-100">
+<span class="text-[13px] font-bold text-slate-700" style="">Tráº§n Thá» B <span class="text-[10px] font-medium text-slate-400 block" style="">Linh ÄÃ m</span></span>
+<span class="text-[13px] font-extrabold text-error bg-error/5 px-2 py-0.5 rounded-lg" style="">3.4/5</span>
+</div>
+<div class="flex justify-between items-center group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-all border border-transparent hover:border-slate-100">
+<span class="text-[13px] font-bold text-slate-700" style="">LÃª VÄn C <span class="text-[10px] font-medium text-slate-400 block" style="">Long BiÃªn</span></span>
+<span class="text-[13px] font-extrabold text-warning bg-warning/5 px-2 py-0.5 rounded-lg" style="">3.8/5</span>
+</div>
+</div>
+</div>
+<!-- Bottom 5 NhÃ¢n viÃªn -->
+<div class="p-6">
+<h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-1" style="">NhÃ¢n viÃªn</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-all border border-transparent hover:border-slate-100">
+<span class="text-[13px] font-bold text-slate-700" style="">HoÃ ng Diá»u L <span class="text-[10px] font-medium text-slate-400 block" style="">Báº£o vá»</span></span>
+<span class="text-[13px] font-extrabold text-error bg-error/5 px-2 py-0.5 rounded-lg" style="">2.1/5</span>
+</div>
+<div class="flex justify-between items-center group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-all border border-transparent hover:border-slate-100">
+<span class="text-[13px] font-bold text-slate-700" style="">Pháº¡m Minh K <span class="text-[10px] font-medium text-slate-400 block" style="">TÆ° váº¥n</span></span>
+<span class="text-[13px] font-extrabold text-error bg-error/5 px-2 py-0.5 rounded-lg" style="">2.8/5</span>
+</div>
+<div class="flex justify-between items-center group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-all border border-transparent hover:border-slate-100">
+<span class="text-[13px] font-bold text-slate-700" style="">Äá» HÃ¹ng D <span class="text-[10px] font-medium text-slate-400 block" style="">Lá» tÃ¢n</span></span>
+<span class="text-[13px] font-extrabold text-warning bg-warning/5 px-2 py-0.5 rounded-lg" style="">3.1/5</span>
+</div>
+</div>
+</div>
+<!-- Bottom 5 ChÆ°Æ¡ng trÃ¬nh -->
+<div class="p-6">
+<h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-6 px-1" style="">ChÆ°Æ¡ng trÃ¬nh</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center group cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-all border border-transparent hover:border-slate-100">
+<span class="text-[13px] font-bold text-slate-700 truncate max-w-[180px]" style="">English for Kids <span class="text-[10px] font-medium text-slate-400 block" style="">Level 1</span></span>
+<span class="text-[13px] font-extrabold text-error bg-error/5 px-2 py-0.5 rounded-lg" style="">3.0/5</span>
+</div>
+</div></div></div></section></div></main></div></body></html>
