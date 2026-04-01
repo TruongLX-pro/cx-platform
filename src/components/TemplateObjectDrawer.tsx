@@ -1,17 +1,40 @@
-import type { TemplateObject } from '../types'
+import { useEffect, useMemo, useState } from 'react'
+import { CustomSelect } from './CustomSelect'
+import type { QuestionType, TemplateObject } from '../types'
 
 interface TemplateObjectDrawerProps {
   object: TemplateObject | null
   templateName: string
+  mode: 'create' | 'edit'
   onClose: () => void
+  onSave: (object: TemplateObject) => void
 }
 
 export function TemplateObjectDrawer({
   object,
   templateName,
+  mode,
   onClose,
+  onSave,
 }: TemplateObjectDrawerProps) {
-  if (!object) return null
+  const [draft, setDraft] = useState<TemplateObject | null>(object)
+
+  useEffect(() => {
+    setDraft(object)
+  }, [object])
+
+  const questionTypeOptions = useMemo(
+    () => [
+      { value: 'Rating 1-5' as QuestionType, label: 'Rating 1-5' },
+      { value: 'NPS 0-10' as QuestionType, label: 'NPS 0-10' },
+      { value: 'Text' as QuestionType, label: 'Text' },
+    ],
+    [],
+  )
+
+  if (!object || !draft) return null
+
+  const usesScale = draft.questionType !== 'Text'
 
   return (
     <>
@@ -19,14 +42,14 @@ export function TemplateObjectDrawer({
       <aside className="drawer drawer--large">
         <div className="drawer__header">
           <div>
-            <h2>Chỉnh sửa object</h2>
-            <p>Cập nhật cấu trúc và câu hỏi chính cho một object trong template</p>
+            <h2>{mode === 'create' ? 'Thêm object mới' : 'Chỉnh sửa object'}</h2>
+            <p>Cập nhật cấu trúc và câu hỏi chính cho một object trong template.</p>
           </div>
           <div className="drawer__actions">
             <button className="button button--ghost" type="button" onClick={onClose}>
               Hủy
             </button>
-            <button className="button button--primary" type="button" onClick={onClose}>
+            <button className="button button--primary" type="button" onClick={() => onSave(normalizeDraft(draft))}>
               Lưu thay đổi
             </button>
           </div>
@@ -42,20 +65,49 @@ export function TemplateObjectDrawer({
               <h3>Thông tin object</h3>
               <div className="form-grid">
                 <label className="field">
-                  <span>Loại object *</span>
-                  <input value={object.type} readOnly />
+                  <span>Loại object</span>
+                  <input
+                    value={draft.type}
+                    onChange={(event) =>
+                      setDraft((current) => (current ? { ...current, type: event.target.value } : current))
+                    }
+                  />
                 </label>
                 <label className="field">
                   <span>Tên object</span>
-                  <input value={object.name} readOnly />
+                  <input
+                    value={draft.name}
+                    onChange={(event) =>
+                      setDraft((current) => (current ? { ...current, name: event.target.value } : current))
+                    }
+                  />
                 </label>
                 <label className="field">
-                  <span>Mã tham chiếu object</span>
-                  <input value={object.refCode} readOnly />
+                  <span>Mã tham chiếu</span>
+                  <input
+                    value={draft.refCode}
+                    onChange={(event) =>
+                      setDraft((current) => (current ? { ...current, refCode: event.target.value } : current))
+                    }
+                  />
                 </label>
                 <label className="field">
                   <span>Thứ tự hiển thị</span>
-                  <input value={String(object.displayOrder)} readOnly />
+                  <input
+                    type="number"
+                    min={1}
+                    value={draft.displayOrder}
+                    onChange={(event) =>
+                      setDraft((current) =>
+                        current
+                          ? {
+                              ...current,
+                              displayOrder: Number(event.target.value) || current.displayOrder,
+                            }
+                          : current,
+                      )
+                    }
+                  />
                 </label>
               </div>
             </div>
@@ -65,45 +117,108 @@ export function TemplateObjectDrawer({
               <div className="form-grid form-grid--single">
                 <label className="field">
                   <span>Câu hỏi chính</span>
-                  <textarea value={object.question} readOnly rows={4} />
+                  <textarea
+                    value={draft.question}
+                    rows={4}
+                    onChange={(event) =>
+                      setDraft((current) => (current ? { ...current, question: event.target.value } : current))
+                    }
+                  />
                 </label>
               </div>
 
               <div className="form-grid form-grid--three">
                 <label className="field">
                   <span>Loại câu hỏi</span>
-                  <input value={object.questionType} readOnly />
+                  <CustomSelect
+                    value={draft.questionType}
+                    onChange={(questionType) => {
+                      setDraft((current) => {
+                        if (!current) return current
+
+                        return {
+                          ...current,
+                          questionType,
+                          minScore:
+                            questionType === 'Rating 1-5'
+                              ? 1
+                              : questionType === 'NPS 0-10'
+                                ? 0
+                                : undefined,
+                          maxScore:
+                            questionType === 'Rating 1-5'
+                              ? 5
+                              : questionType === 'NPS 0-10'
+                                ? 10
+                                : undefined,
+                        }
+                      })
+                    }}
+                    options={questionTypeOptions}
+                  />
                 </label>
                 <div className="field">
                   <span>Bắt buộc</span>
                   <div className="toggle-row">
-                    <span>{object.required ? 'Bật' : 'Tắt'}</span>
-                    <div className={`toggle${object.required ? ' toggle--on' : ''}`} />
+                    <span>{draft.required ? 'Bật' : 'Tắt'}</span>
+                    <button
+                      className={`toggle${draft.required ? ' toggle--on' : ''}`}
+                      type="button"
+                      onClick={() =>
+                        setDraft((current) =>
+                          current ? { ...current, required: !current.required } : current,
+                        )
+                      }
+                    />
                   </div>
                 </div>
                 <div className="field">
                   <span>Cho phép góp ý</span>
                   <div className="toggle-row">
-                    <span>{object.allowComment ? 'Bật' : 'Tắt'}</span>
-                    <div className={`toggle${object.allowComment ? ' toggle--on' : ''}`} />
+                    <span>{draft.allowComment ? 'Bật' : 'Tắt'}</span>
+                    <button
+                      className={`toggle${draft.allowComment ? ' toggle--on' : ''}`}
+                      type="button"
+                      onClick={() =>
+                        setDraft((current) =>
+                          current ? { ...current, allowComment: !current.allowComment } : current,
+                        )
+                      }
+                    />
                   </div>
                 </div>
               </div>
             </div>
 
-            {object.questionType !== 'Text' ? (
+            {usesScale ? (
               <div className="form-card">
                 <h3>Cấu hình thang điểm</h3>
                 <div className="score-range">
-                  <div className="score-box">
+                  <label className="field score-box">
                     <span>Giá trị nhỏ nhất</span>
-                    <strong>{object.minScore}</strong>
-                  </div>
+                    <input
+                      type="number"
+                      value={draft.minScore ?? ''}
+                      onChange={(event) =>
+                        setDraft((current) =>
+                          current ? { ...current, minScore: Number(event.target.value) } : current,
+                        )
+                      }
+                    />
+                  </label>
                   <div className="score-arrow">→</div>
-                  <div className="score-box">
+                  <label className="field score-box">
                     <span>Giá trị lớn nhất</span>
-                    <strong>{object.maxScore}</strong>
-                  </div>
+                    <input
+                      type="number"
+                      value={draft.maxScore ?? ''}
+                      onChange={(event) =>
+                        setDraft((current) =>
+                          current ? { ...current, maxScore: Number(event.target.value) } : current,
+                        )
+                      }
+                    />
+                  </label>
                 </div>
               </div>
             ) : null}
@@ -117,14 +232,14 @@ export function TemplateObjectDrawer({
 
               <div className="preview-card">
                 <div className="preview-card__eyebrow">Object</div>
-                <div className="preview-card__title">{object.name}</div>
-                <p>{object.question}</p>
+                <div className="preview-card__title">{draft.name || 'Object mới'}</div>
+                <p>{draft.question || 'Câu hỏi chính sẽ hiển thị tại đây.'}</p>
 
-                {object.questionType === 'Rating 1-5' ? (
+                {draft.questionType === 'Rating 1-5' ? (
                   <div className="rating-preview">★ ★ ★ ★ ☆</div>
                 ) : null}
 
-                {object.questionType === 'NPS 0-10' ? (
+                {draft.questionType === 'NPS 0-10' ? (
                   <div className="nps-preview">
                     {Array.from({ length: 11 }, (_, index) => (
                       <span key={index}>{index}</span>
@@ -132,11 +247,11 @@ export function TemplateObjectDrawer({
                   </div>
                 ) : null}
 
-                {object.questionType === 'Text' ? (
+                {draft.questionType === 'Text' ? (
                   <div className="text-preview">Ô nhập nội dung phản hồi</div>
                 ) : null}
 
-                {object.allowComment ? (
+                {draft.allowComment ? (
                   <div className="comment-preview">Ý kiến góp ý thêm (không bắt buộc)</div>
                 ) : null}
               </div>
@@ -146,4 +261,16 @@ export function TemplateObjectDrawer({
       </aside>
     </>
   )
+}
+
+function normalizeDraft(object: TemplateObject): TemplateObject {
+  if (object.questionType === 'Text') {
+    return {
+      ...object,
+      minScore: undefined,
+      maxScore: undefined,
+    }
+  }
+
+  return object
 }

@@ -1,3 +1,5 @@
+import { CustomSelect } from '../../components/CustomSelect'
+
 export type DashboardTab = 'tutor' | 'station' | 'rino-digi'
 
 export function DashboardHeader({
@@ -93,18 +95,12 @@ export function FilterField({
       {type === 'date' ? (
         <input className="dashboard-tutor-control dashboard-tutor-control--date" type="date" value={value} onChange={(event) => onChange(event.target.value)} />
       ) : (
-        <div className="dashboard-tutor-select-wrap">
-          <select className="dashboard-tutor-control dashboard-tutor-control--select" value={value} onChange={(event) => onChange(event.target.value)}>
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <span className="material-symbols-outlined dashboard-tutor-select-icon" aria-hidden="true">
-            keyboard_arrow_down
-          </span>
-        </div>
+        <CustomSelect
+          className="dashboard-tutor-select"
+          value={value}
+          onChange={onChange}
+          options={options}
+        />
       )}
     </label>
   )

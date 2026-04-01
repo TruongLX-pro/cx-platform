@@ -1,15 +1,57 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { CustomSelect } from '../../components/CustomSelect'
 import { DeactivateModal } from '../../components/DeactivateModal'
 import { StatusChip } from '../../components/StatusChip'
 import { TouchpointUsageDrawer } from '../../components/TouchpointUsageDrawer'
-import { summaryMetrics, templateRecords } from '../../data/templateData'
-import type { TemplateRecord } from '../../types'
+import {
+  objectModeOptions,
+  ownerTeamOptions,
+  respondentOptions,
+  summaryMetrics,
+  surveyTypeOptions,
+  templateRecords,
+  templateStatusOptions,
+} from '../../data/templateData'
+import type {
+  ObjectMode,
+  RespondentType,
+  SurveyType,
+  TemplateRecord,
+  TemplateStatus,
+} from '../../types'
 
 export function TemplateListPage() {
+  const [keyword, setKeyword] = useState('')
+  const [surveyType, setSurveyType] = useState<'all' | SurveyType>('all')
+  const [respondentType, setRespondentType] = useState<'all' | RespondentType>('all')
+  const [objectMode, setObjectMode] = useState<'all' | ObjectMode>('all')
+  const [status, setStatus] = useState<'all' | TemplateStatus>('all')
+  const [ownerTeam, setOwnerTeam] = useState<'all' | string>('all')
   const [selectedUsageTemplate, setSelectedUsageTemplate] = useState<TemplateRecord | null>(null)
   const [selectedDeactivateTemplate, setSelectedDeactivateTemplate] =
     useState<TemplateRecord | null>(null)
+
+  const filteredTemplates = useMemo(() => {
+    const normalizedKeyword = keyword.trim().toLowerCase()
+
+    return templateRecords.filter((template) => {
+      const matchesKeyword =
+        !normalizedKeyword ||
+        [template.code, template.name, template.goal].some((value) =>
+          value.toLowerCase().includes(normalizedKeyword),
+        )
+
+      return (
+        matchesKeyword &&
+        (surveyType === 'all' || template.surveyType === surveyType) &&
+        (respondentType === 'all' || template.respondentType === respondentType) &&
+        (objectMode === 'all' || template.objectMode === objectMode) &&
+        (status === 'all' || template.status === status) &&
+        (ownerTeam === 'all' || template.ownerTeam === ownerTeam)
+      )
+    })
+  }, [keyword, objectMode, ownerTeam, respondentType, status, surveyType])
 
   const activeCount = useMemo(
     () => templateRecords.filter((item) => item.status === 'Đang hoạt động').length,
@@ -17,44 +59,59 @@ export function TemplateListPage() {
   )
 
   return (
-    <section className="template-page">
+    <section className="template-page template-page--list">
       <div className="page-header">
         <div>
           <h1>Danh sách template khảo sát</h1>
-          <p>Quản lý tập trung các mẫu khảo sát dùng chung cho nhiều điểm chạm trong hệ thống.</p>
+          <p>
+            Quản lý tập trung các mẫu khảo sát dùng chung cho nhiều điểm chạm trong toàn hệ
+            thống CX Platform.
+          </p>
         </div>
         <div className="page-header__actions">
           <Link className="button button--primary" to="/templates/new">
-            + Tạo template mới
+            <span className="material-symbols-outlined">add</span>
+            Tạo template mới
           </Link>
         </div>
       </div>
 
-      <div className="stats-grid stats-grid--compact">
+      <div className="stats-grid stats-grid--compact template-stats-grid">
         <StatCard label="Tổng template" value={summaryMetrics.total} suffix="mẫu" />
-        <StatCard label="Đang hoạt động" value={activeCount} hint="ACTIVE" />
-        <StatCard label="Bản nháp" value={summaryMetrics.draft} hint="DRAFT" />
-        <StatCard label="Multi-object" value={summaryMetrics.multiObject} hint="MULTI" accent="warning" />
+        <StatCard label="Đang hoạt động" value={activeCount} hint="Active" />
+        <StatCard label="Bản nháp" value={summaryMetrics.draft} hint="Draft" />
+        <StatCard label="Multi-object" value={summaryMetrics.multiObject} hint="Multi" accent="warning" />
       </div>
 
       <div className="filter-card filter-card--template">
-        <div className="filter-card__search">
-          <input placeholder="Tìm theo mã hoặc tên template..." />
+        <div className="template-search-field">
+          <span className="material-symbols-outlined">search</span>
+          <input
+            placeholder="Tìm theo mã hoặc tên template..."
+            value={keyword}
+            onChange={(event) => setKeyword(event.target.value)}
+          />
         </div>
+
         <div className="filter-grid filter-grid--five">
-          <SelectField label="Loại khảo sát" value="Tất cả" />
-          <SelectField label="Đối tượng trả lời" value="Tất cả" />
-          <SelectField label="Chế độ object" value="Tất cả" />
-          <SelectField label="Trạng thái" value="Tất cả" />
-          <SelectField label="Bộ phận phụ trách" value="Tất cả" />
+          <FilterSelect label="Loại khảo sát" value={surveyType} onChange={setSurveyType} options={surveyTypeOptions} />
+          <FilterSelect
+            label="Đối tượng trả lời"
+            value={respondentType}
+            onChange={setRespondentType}
+            options={respondentOptions}
+          />
+          <FilterSelect label="Chế độ object" value={objectMode} onChange={setObjectMode} options={objectModeOptions} />
+          <FilterSelect label="Trạng thái" value={status} onChange={setStatus} options={templateStatusOptions} />
+          <FilterSelect label="Bộ phận phụ trách" value={ownerTeam} onChange={setOwnerTeam} options={ownerTeamOptions} />
         </div>
       </div>
 
-      <div className="table-card">
+      <div className="table-card template-table-card">
         <table className="data-table data-table--template-list">
           <thead>
             <tr>
-              <th>Mã template</th>
+              <th>Mẫu khảo sát</th>
               <th>Loại / Mục tiêu</th>
               <th>Đối tượng</th>
               <th>Chế độ / Số object</th>
@@ -66,11 +123,11 @@ export function TemplateListPage() {
             </tr>
           </thead>
           <tbody>
-            {templateRecords.map((template) => (
+            {filteredTemplates.map((template) => (
               <tr key={template.id}>
                 <td className="template-name-cell">
-                  <div className="code-cell">{template.code}</div>
                   <div className="template-name-cell__title">{template.name}</div>
+                  <div className="code-cell">{template.code}</div>
                 </td>
                 <td>
                   <div className="stacked">
@@ -85,8 +142,7 @@ export function TemplateListPage() {
                       {template.objectMode === 'multi' ? 'Multi-object' : 'Single-object'}
                     </span>
                     <span className="muted-text">
-                      {template.objects.length}
-                      {template.objects.length > 1 ? ' object' : ' object'}
+                      {template.objects.length} {template.objects.length > 1 ? 'object' : 'object'}
                     </span>
                   </div>
                 </td>
@@ -114,28 +170,28 @@ export function TemplateListPage() {
                   </div>
                 </td>
                 <td>
-                  <div className="row-actions-icons">
-                    <Link className="icon-link" to={`/templates/${template.id}`} aria-label="View">
-                      ∘
+                  <div className="row-actions-icons row-actions-icons--template">
+                    <Link className="icon-link" to={`/templates/${template.id}`} aria-label="Xem">
+                      <span className="material-symbols-outlined">visibility</span>
                     </Link>
-                    <Link className="icon-link" to={`/templates/${template.id}/edit`} aria-label="Edit">
-                      /
+                    <Link className="icon-link" to={`/templates/${template.id}/edit`} aria-label="Chỉnh sửa">
+                      <span className="material-symbols-outlined">edit</span>
                     </Link>
-                    <button className="icon-link" type="button" aria-label="Duplicate">
-                      +
+                    <button className="icon-link" type="button" aria-label="Nhân bản">
+                      <span className="material-symbols-outlined">content_copy</span>
                     </button>
                     {template.status === 'Đang hoạt động' ? (
                       <button
                         className="icon-link icon-link--danger"
                         type="button"
                         onClick={() => setSelectedDeactivateTemplate(template)}
-                        aria-label="Deactivate"
+                        aria-label="Ngừng sử dụng"
                       >
-                        −
+                        <span className="material-symbols-outlined">block</span>
                       </button>
                     ) : (
-                      <button className="icon-link icon-link--positive" type="button" aria-label="Activate">
-                        ▶
+                      <button className="icon-link icon-link--positive" type="button" aria-label="Kích hoạt">
+                        <span className="material-symbols-outlined">play_arrow</span>
                       </button>
                     )}
                   </div>
@@ -147,7 +203,9 @@ export function TemplateListPage() {
       </div>
 
       <div className="table-footer">
-        <span>Hiển thị 1 - 4 của 45 template</span>
+        <span>
+          Hiển thị 1 - {filteredTemplates.length} của {templateRecords.length} template
+        </span>
         <div className="pagination">
           <button className="pagination__button" type="button">
             1
@@ -187,7 +245,7 @@ function StatCard({
   accent?: 'warning'
 }) {
   return (
-    <article className={`stat-card${accent ? ` stat-card--${accent}` : ''}`}>
+    <article className={`stat-card template-stat-card${accent ? ` stat-card--${accent}` : ''}`}>
       <span>{label}</span>
       <div className="stat-card__value-row">
         <strong>{value}</strong>
@@ -198,11 +256,36 @@ function StatCard({
   )
 }
 
-function SelectField({ label, value }: { label: string; value: string }) {
+function FilterSelect<T extends string>({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string
+  value: 'all' | T
+  onChange: (value: 'all' | T) => void
+  options: readonly T[] | string[]
+}) {
   return (
     <label className="field field--compact">
       <span>{label}</span>
-      <div className="fake-select">{value}</div>
+      <CustomSelect
+        value={value}
+        onChange={onChange}
+        options={[
+          { value: 'all' as 'all' | T, label: 'Tất cả' },
+          ...options.map((item) => ({
+            value: item as 'all' | T,
+            label:
+              item === 'multi'
+                ? 'Multi-object'
+                : item === 'single'
+                  ? 'Single-object'
+                  : String(item),
+          })),
+        ]}
+      />
     </label>
   )
 }

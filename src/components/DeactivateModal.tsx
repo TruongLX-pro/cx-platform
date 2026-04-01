@@ -17,8 +17,8 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
         <h2>Ngừng sử dụng template?</h2>
         <p className="modal__lead">
           Template <strong>"{template.name}"</strong> hiện đang được sử dụng tại{' '}
-          <strong>{template.touchpoints.length} điểm chạm</strong>. Sau khi ngừng sử dụng,
-          template sẽ không còn được dùng cho các cấu hình active mới.
+          <strong>{template.touchpoints.length} điểm chạm</strong>. Sau khi ngừng sử dụng, template
+          sẽ không còn được áp dụng cho các cấu hình active mới.
         </p>
 
         <div className="modal__summary">
@@ -41,7 +41,7 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
         </div>
 
         <div className="modal__affected">
-          <span>Danh sách điểm chạm bị ảnh hưởng</span>
+          <span>Điểm chạm bị ảnh hưởng</span>
           <div className="modal__tags">
             {template.touchpoints.map((touchpoint) => (
               <span className="pill" key={touchpoint.id}>
@@ -53,7 +53,10 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
 
         <label className="confirmation-box">
           <input type="checkbox" defaultChecked />
-          <span>Tôi hiểu rằng template sẽ không còn khả dụng cho các điểm chạm active mới.</span>
+          <span>
+            Tôi hiểu rằng template sẽ không còn khả dụng cho các điểm chạm active mới sau khi xác
+            nhận thao tác này.
+          </span>
         </label>
 
         <div className="modal__actions">

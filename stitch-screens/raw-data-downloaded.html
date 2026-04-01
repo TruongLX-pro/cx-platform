@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dữ liệu phản hồi tập trung | CX Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2563eb",
+                        "primary-hover": "#1d4ed8",
+                        "surface": "#f8fafc",
+                        "on-surface": "#0f172a",
+                        "on-surface-variant": "#64748b",
+                        "outline": "#e2e8f0",
+                        "warning": "#FF9E08",
+                        "error": "#EA2D2D"
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "headline": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.375rem",
+                        "lg": "0.5rem",
+                        "xl": "1rem",
+                        "2xl": "1.25rem",
+                        "3xl": "1.5rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .table-sticky-header th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col bg-white w-64 border-r border-outline z-[60] pt-4">
+<div class="px-6 flex items-center space-x-3 content-center pb-6">
+<img alt="Mascot" class="h-9 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uj-fNGi2xG0TVVN7s9_2bmcAv79Zpl7QslirqOYdi61KUwZhIxdExe1wvBl2-BMCoP5wPnK-nIhKj4RALK582m4_SjuNIWursTlA6tvTbH3fp5339Tm2ePY1wXmfrYY4YWQZ_6Ryf4Op98BswYwM6ALPJb3xG_I3Ys2Wec64oCbvfiz1-K63K_AOZXOdldqrIEzXCic485N8Ftduf5wJWB4QcLDJc2r3Wi2hfe-1MD8sEdVhTwsZTP_SgaStj7L4QFC9laI-f5RNek"/>
+<div class="flex">
+<img alt="RinoEdu" class="h-6 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/ADBb0uh-8vgEo81FuMcXvZfb4miJJkaQhQq-WNe4bLW2crK3bnVD-1L5dizI9KYkjDrIzzkDNN1dzlStUD-d53CFDqG7-1nvzxB-RZfK9Lg9kCXCkK9QUz2qENEwrEuCMEvirHKyk-wm2r89OjcIvf2rv2oD8fRLNK5dcs9JMHi64tsnziTcxe9w0XadXlxz1iED4cj-wYIEBMaNO4FEmhnw5WFeBo9xCFTIR7goZKYMc5Mzd_ZxxznPjcPSt2nRc4eNu0WPGaQr_02uKOg"/>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-all font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-[22px]">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-all font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-[22px]">rule</span>
+<span>Điểm chạm</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-all font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-[22px]">sync_alt</span>
+<span>Template khảo sát</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 bg-primary/5 text-primary rounded-lg transition-all font-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">poll</span>
+<span>Dữ liệu phản hồi</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-all font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-[22px]">analytics</span>
+<span>Phân tích</span>
+</a>
+</nav>
+<div class="px-3 py-6 border-t border-outline">
+<div class="space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-all font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-lg transition-all font-medium text-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-white border-b border-outline flex justify-between items-center px-14 py-3 h-16">
+<div class="flex items-center pl-64 w-full">
+<div class="ml-auto flex items-center space-x-3">
+<div class="flex items-center bg-slate-100 px-4 py-2 rounded-xl w-64 mr-4 border border-transparent focus-within:border-primary/30 focus-within:bg-white transition-all">
+<span class="material-symbols-outlined text-slate-400 mr-2 text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-slate-400 font-medium" placeholder="Tìm kiếm bản ghi..." type="text"/>
+</div>
+<button class="material-symbols-outlined p-2 text-slate-500 hover:bg-slate-50 transition-colors rounded-xl border border-transparent hover:border-slate-200">notifications</button>
+<button class="material-symbols-outlined p-2 text-slate-500 hover:bg-slate-50 transition-colors rounded-xl border border-transparent hover:border-slate-200">settings</button>
+<div class="w-9 h-9 rounded-xl border-2 border-slate-100 overflow-hidden ml-2 ring-2 ring-primary/10">
+<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHPIFFvWAChmW9gIh8hxlAGeZpMe0J5_X_S-k0kvcRSHtT5sjEo7D0MKUQzBwSukeILef6wKJcq9EWCOByAZk9d0yXua6GFHo1P0Eo3TZYAlQDLxbXXj1yJrxT8PsqKmfyUju3Ex-L0Bgi7sRcN56bC-7F4bT8Hs2J8bVa8_lgEXO1JQaeYhu2GZbA9xgMN8HiLjbEq30HyB2kKgMonHIgXjFWTdZsFiYqE3-r1SCFYp-peuMZxOsfQiM_H5G1c0oZYJpmlXPbsprB"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pl-64 pt-16 h-screen flex flex-col space-y-8">
+<!-- Page Header -->
+<div class="px-14 pt-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h1 class="font-bold text-3xl text-slate-900 tracking-tight">Dữ liệu phản hồi tập trung</h1>
+<p class="text-slate-500 text-sm mt-1.5 font-medium">Tra cứu, lọc và xuất dữ liệu phản hồi khảo sát và khiếu nại theo nhu cầu</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-white text-slate-700 font-bold text-sm rounded-xl border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+<span>Làm mới dữ liệu</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-primary text-white font-bold text-sm rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-hover transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">download</span>
+<span>Xuất dữ liệu</span>
+</button>
+</div>
+</div>
+<!-- Summary Strip -->
+<div class="px-14">
+<div class="grid grid-cols-5 gap-6">
+<div class="bg-white p-6 rounded-2xl border border-outline shadow-sm hover:shadow-md transition-shadow">
+<p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-2">Tổng bản ghi</p>
+<p class="text-2xl font-extrabold text-slate-900">12,450</p>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-outline shadow-sm hover:shadow-md transition-shadow">
+<p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-2">Bản ghi khảo sát</p>
+<p class="text-2xl font-extrabold text-primary">10,200</p>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-outline shadow-sm hover:shadow-md transition-shadow">
+<p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-2">Bản ghi khiếu nại</p>
+<p class="text-2xl font-extrabold text-slate-700">2,250</p>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-outline shadow-sm hover:shadow-md transition-shadow">
+<p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-2">Bản ghi báo lỗi</p>
+<div class="flex items-center justify-between">
+<p class="text-2xl font-extrabold text-error">156</p>
+<span class="material-symbols-outlined text-error text-xl" style="font-variation-settings: 'FILL' 1;">bug_report</span>
+</div>
+</div>
+<div class="bg-white p-6 rounded-2xl border-l-4 border-l-warning border-outline shadow-sm hover:shadow-md transition-shadow">
+<p class="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-2">Thiếu mapping</p>
+<div class="flex items-center justify-between">
+<p class="text-2xl font-extrabold text-warning">15</p>
+<span class="material-symbols-outlined text-warning text-xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Filter & Table Container -->
+<div class="flex-1 overflow-hidden px-14 pb-10 flex flex-col space-y-8">
+<!-- Advanced Filter Panel -->
+<section class="bg-white p-6 rounded-2xl border border-outline shadow-sm">
+<div class="grid grid-cols-6 gap-6">
+<!-- Filters -->
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Loại dữ liệu</label>
+<select class="bg-slate-50 border-slate-200 text-xs py-2.5 rounded-xl focus:ring-primary focus:border-primary transition-all font-semibold text-slate-700">
+<option>Tất cả</option>
+<option>Khảo sát</option>
+<option>Khiếu nại</option>
+<option>Báo lỗi</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Hệ thống nguồn</label>
+<select class="bg-slate-50 border-slate-200 text-xs py-2.5 rounded-xl focus:ring-primary focus:border-primary transition-all font-semibold text-slate-700">
+<option>Tất cả</option>
+<option>Care</option>
+<option>Zalo</option>
+<option>Ticket</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Thời gian</label>
+<div class="relative">
+<input class="bg-slate-50 border-slate-200 text-xs py-2.5 px-3 pr-10 rounded-xl w-full focus:ring-primary focus:border-primary transition-all font-semibold text-slate-700" type="text" value="01/03/2026 - 24/03/2026"/>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-slate-400 text-sm">calendar_month</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Sản phẩm</label>
+<select class="bg-slate-50 border-slate-200 text-xs py-2.5 rounded-xl focus:ring-primary focus:border-primary transition-all font-semibold text-slate-700">
+<option>Tiếng Anh Cam</option>
+<option>Toán Tư Duy</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Chương trình</label>
+<select class="bg-slate-50 border-slate-200 text-xs py-2.5 rounded-xl focus:ring-primary focus:border-primary transition-all font-semibold text-slate-700">
+<option>Tất cả</option>
+<option>Rinoedu</option>
+<option>Station</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-tight">Người phản hồi</label>
+<input class="bg-slate-50 border-slate-200 text-xs py-2.5 px-4 rounded-xl focus:ring-primary focus:border-primary transition-all font-semibold text-slate-700" placeholder="Tìm tên/SĐT..." type="text"/>
+</div>
+<!-- Row 2 Actions -->
+<div class="col-span-full flex items-center justify-between pt-4 mt-2 border-t border-slate-100">
+<div class="flex items-center gap-8">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded-lg border-slate-300 text-primary focus:ring-primary transition-all" type="checkbox"/>
+<span class="text-xs font-bold text-slate-600 group-hover:text-slate-900">Chỉ xem Negative Flag</span>
+</label>
+<button class="text-primary text-xs font-extrabold flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+<span>Bộ lọc nâng cao (12)</span>
+</button>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-xl transition-colors">Đặt lại</button>
+<button class="px-8 py-2 bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe] text-xs font-extrabold rounded-xl shadow-sm hover:bg-[#dbeafe] hover:text-[#1d4ed8] transition-all">Áp dụng</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Table Container -->
+<div class="flex-1 bg-white rounded-3xl border border-outline shadow-sm flex flex-col overflow-hidden">
+<div class="flex-1 overflow-auto custom-scrollbar">
+<table class="w-full text-left border-separate border-spacing-0 table-sticky-header">
+<thead class="bg-slate-50">
+<tr>
+<th class="p-6 bg-slate-50 border-b border-outline w-10">
+<input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"/>
+</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Record ID</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Loại</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Nguồn</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Touchpoint</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Điểm/Chủ đề</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Người phản hồi</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Đối tượng liên quan</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Chương trình</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Sản phẩm</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap text-center">Negative</th>
+<th class="p-6 bg-slate-50 border-b border-outline text-[11px] font-bold uppercase text-slate-500 whitespace-nowrap">Trạng thái</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="p-6"><input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="p-6 text-xs font-bold text-primary font-mono tracking-tight">SR_20260324_0001</td>
+<td class="p-6">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary/10 text-primary">Khảo sát</span>
+</td>
+<td class="p-6 text-xs font-medium text-slate-600">Care</td>
+<td class="p-6 text-xs font-medium text-slate-600">CSAT</td>
+<td class="p-6 text-xs font-bold text-primary">5</td>
+<td class="p-6 text-xs font-semibold text-slate-900">Phụ huynh</td>
+<td class="p-6 text-xs text-slate-600">Giáo viên: Trần Thị B</td>
+<td class="p-6 text-xs text-slate-600">Rinoedu</td>
+<td class="p-6 text-xs text-slate-600">Tiếng Anh Cam</td>
+<td class="p-6 text-center">
+<span class="material-symbols-outlined text-slate-200 text-[18px]">check_circle</span>
+</td>
+<td class="p-6">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">Hoàn thành</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 transition-colors group bg-error/5">
+<td class="p-6"><input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="p-6 text-xs font-bold text-primary font-mono tracking-tight">CC_20260325_0001</td>
+<td class="p-6">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-error/10 text-error">Khiếu nại</span>
+</td>
+<td class="p-6 text-xs font-medium text-slate-600">Ticket</td>
+<td class="p-6 text-xs font-medium text-slate-600">Chất lượng giảng dạy</td>
+<td class="p-6 text-xs italic text-slate-300">N/A</td>
+<td class="p-6 text-xs font-semibold text-slate-900">Phụ huynh</td>
+<td class="p-6 text-xs text-slate-600">Giáo viên: Lê Thị D</td>
+<td class="p-6 text-xs text-slate-600">Station</td>
+<td class="p-6 text-xs text-slate-600">Tiếng Anh Cam</td>
+<td class="p-6 text-center">
+<span class="material-symbols-outlined text-error text-[18px]" style="font-variation-settings: 'FILL' 1;">error</span>
+</td>
+<td class="p-6">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-warning/10 text-warning">Đang xử lý</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 transition-colors group">
+<td class="p-6"><input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="p-6 text-xs font-bold text-primary font-mono tracking-tight">SR_20260324_0002</td>
+<td class="p-6">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary/10 text-primary">Khảo sát</span>
+</td>
+<td class="p-6 text-xs font-medium text-slate-600">Zalo</td>
+<td class="p-6 text-xs font-medium text-slate-600">NPS</td>
+<td class="p-6 text-xs font-bold text-error">3</td>
+<td class="p-6 text-xs font-semibold text-slate-900">Học sinh</td>
+<td class="p-6 text-xs text-slate-600">Tiếng Anh Cam</td>
+<td class="p-6 text-xs text-slate-600">Rinodigi</td>
+<td class="p-6 text-xs text-slate-600">Tiếng Anh Cam</td>
+<td class="p-6 text-center">
+<span class="material-symbols-outlined text-warning text-[18px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+</td>
+<td class="p-6">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">Hoàn thành</span>
+</td>
+</tr>
+<script>
+                                for(let i=0; i<15; i++) {
+                                    document.write(`
+                                        <tr class="hover:bg-slate-50/50 transition-colors group">
+                                            <td class="p-6"><input class="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary" type="checkbox"></td>
+                                            <td class="p-6 text-xs font-bold text-primary font-mono tracking-tight">SR_20260324_00${10+i}</td>
+                                            <td class="p-6">
+                                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary/10 text-primary">Khảo sát</span>
+                                            </td>
+                                            <td class="p-6 text-xs font-medium text-slate-600">Care</td>
+                                            <td class="p-6 text-xs font-medium text-slate-600">CES</td>
+                                            <td class="p-6 text-xs font-bold text-slate-900">7</td>
+                                            <td class="p-6 text-xs font-semibold text-slate-900">Học sinh</td>
+                                            <td class="p-6 text-xs text-slate-600">CSKH: Nguyễn Văn A</td>
+                                            <td class="p-6 text-xs text-slate-600">Rinoedu</td>
+                                            <td class="p-6 text-xs text-slate-600">Toán Tư Duy</td>
+                                            <td class="p-6 text-center">
+                                                <span class="material-symbols-outlined text-slate-200 text-[18px]">check_circle</span>
+                                            </td>
+                                            <td class="p-6">
+                                                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">Hoàn thành</span>
+                                            </td>
+                                        </tr>
+                                    `);
+                                }
+                            </script>
+</tbody>
+</table>
+</div>
+<!-- Pagination Strip -->
+<div class="px-6 py-5 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
+<div class="text-[12px] font-medium text-slate-500">
+                        Hiển thị <span class="font-bold text-slate-900">1 - 50</span> trên <span class="font-bold text-slate-900">12,450</span> bản ghi
+                    </div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-slate-400 disabled:opacity-30 transition-all">
+<span class="material-symbols-outlined text-[20px]">first_page</span>
+</button>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-slate-400 disabled:opacity-30 transition-all">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<div class="flex items-center px-4 gap-2">
+<span class="text-xs font-extrabold px-3 py-1.5 bg-primary text-white rounded-lg shadow-md shadow-primary/10">1</span>
+<span class="text-xs font-bold px-3 py-1.5 hover:bg-white hover:shadow-sm cursor-pointer rounded-lg text-slate-600 transition-all">2</span>
+<span class="text-xs font-bold px-3 py-1.5 hover:bg-white hover:shadow-sm cursor-pointer rounded-lg text-slate-600 transition-all">3</span>
+<span class="text-xs font-bold px-1 text-slate-300">...</span>
+<span class="text-xs font-bold px-3 py-1.5 hover:bg-white hover:shadow-sm cursor-pointer rounded-lg text-slate-600 transition-all">249</span>
+</div>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-slate-400 transition-all">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+<button class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-slate-400 transition-all">
+<span class="material-symbols-outlined text-[20px]">last_page</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[12px] font-medium text-slate-500">Hàng trên trang:</span>
+<select class="bg-white border-slate-200 text-xs font-bold py-1 px-3 rounded-lg focus:ring-primary focus:border-primary transition-all">
+<option>50</option>
+<option>100</option>
+<option>200</option>
+</select>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { TemplateRecord } from '../types'
 import { StatusChip } from './StatusChip'
 
@@ -6,51 +7,48 @@ interface TouchpointUsageDrawerProps {
   onClose: () => void
 }
 
-export function TouchpointUsageDrawer({
-  template,
-  onClose,
-}: TouchpointUsageDrawerProps) {
+export function TouchpointUsageDrawer({ template, onClose }: TouchpointUsageDrawerProps) {
   if (!template) return null
 
   return (
     <>
       <div className="overlay" onClick={onClose} />
-      <aside className="drawer">
-        <div className="drawer__header">
+      <aside className="drawer drawer--usage">
+        <div className="drawer__header drawer__header--usage">
           <div>
             <h2>Điểm chạm đang sử dụng</h2>
-            <p>Danh sách điểm chạm hiện đang map với template này</p>
+            <p>Danh sách điểm chạm hiện đang map với template này.</p>
           </div>
-          <button className="icon-button" type="button" onClick={onClose} aria-label="Close">
-            ×
+          <button className="icon-button" type="button" onClick={onClose} aria-label="Đóng">
+            <span className="material-symbols-outlined">close</span>
           </button>
         </div>
 
         <div className="usage-summary usage-summary--template">
-          <div>
+          <div className="usage-summary__item">
             <span>Template</span>
             <strong>{template.code}</strong>
           </div>
-          <div>
+          <div className="usage-summary__item">
             <span>Tên template</span>
             <strong>{template.name}</strong>
           </div>
-          <div>
+          <div className="usage-summary__item">
             <span>Tổng điểm chạm đang dùng</span>
             <strong>{template.touchpoints.length}</strong>
           </div>
         </div>
 
-        <div className="table-card table-card--drawer">
-          <table className="data-table">
+        <div className="table-card table-card--drawer table-card--drawer-usage">
+          <table className="data-table template-touchpoint-table template-touchpoint-table--usage">
             <thead>
               <tr>
                 <th>Mã điểm chạm</th>
                 <th>Tên điểm chạm</th>
                 <th>Nguồn</th>
-                <th>Product</th>
+                <th>Sản phẩm</th>
                 <th>Trạng thái</th>
-                <th>Default</th>
+                <th>Mặc định</th>
                 <th>STT</th>
               </tr>
             </thead>
@@ -65,7 +63,12 @@ export function TouchpointUsageDrawer({
                     </div>
                   </td>
                   <td>{touchpoint.sourceSystem}</td>
-                  <td>{touchpoint.product}</td>
+                  <td>
+                    <div className="stacked">
+                      <strong>{touchpoint.product}</strong>
+                      <span className="muted-text">{touchpoint.productType}</span>
+                    </div>
+                  </td>
                   <td>
                     <StatusChip status={touchpoint.status} />
                   </td>
@@ -78,12 +81,14 @@ export function TouchpointUsageDrawer({
         </div>
 
         <div className="drawer__info">
-          Mapping điểm chạm - template hiện chỉ dùng để xem trong phase này. Chỉnh sửa mapping
-          được thực hiện ở cấu hình hệ thống, không thao tác trực tiếp tại đây.
+          Mapping điểm chạm - template hiện chỉ dùng để xem trong phase này. Việc chỉnh sửa mapping
+          sẽ được thực hiện tại module Điểm chạm ở vòng tiếp theo.
         </div>
 
         <div className="drawer__footer drawer__footer--between">
-          <span className="drawer__link">Xem chi tiết template</span>
+          <Link className="drawer__link" to={`/templates/${template.id}`}>
+            Xem chi tiết template
+          </Link>
           <button className="button button--ghost" type="button" onClick={onClose}>
             Đóng
           </button>

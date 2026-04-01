@@ -15,16 +15,21 @@ export function TemplateDetailPage() {
   const [showDeactivateModal, setShowDeactivateModal] = useState(false)
 
   return (
-    <section className="template-detail-page">
-      <div className="warning-banner warning-banner--wide">
-        Template này hiện đang được sử dụng tại {template.touchpoints.length} điểm chạm. Hãy kiểm
-        tra ảnh hưởng trước khi chỉnh sửa hoặc ngừng sử dụng.
-      </div>
+    <section className="template-detail-page template-page--detail">
+      {template.touchpoints.length > 0 ? (
+        <div className="warning-banner warning-banner--wide">
+          <span className="material-symbols-outlined warning-banner__icon">warning</span>
+          <span>
+            Template này hiện đang được sử dụng tại {template.touchpoints.length} điểm chạm. Hãy
+            kiểm tra ảnh hưởng trước khi chỉnh sửa hoặc ngừng sử dụng.
+          </span>
+        </div>
+      ) : null}
 
       <div className="page-header">
         <div>
           <div className="breadcrumb">
-            <Link to="/templates">Templates</Link>
+            <Link to="/templates">Template khảo sát</Link>
             <span>›</span>
             <span>Chi tiết template</span>
           </div>
@@ -32,9 +37,15 @@ export function TemplateDetailPage() {
         </div>
         <div className="page-header__actions">
           <Link className="button button--ghost" to={`/templates/${template.id}/edit`}>
+            <span className="material-symbols-outlined">edit</span>
             Chỉnh sửa template
           </Link>
-          <button className="button button--danger-ghost" type="button" onClick={() => setShowDeactivateModal(true)}>
+          <button
+            className="button button--danger-ghost"
+            type="button"
+            onClick={() => setShowDeactivateModal(true)}
+          >
+            <span className="material-symbols-outlined">block</span>
             Ngừng sử dụng
           </button>
         </div>
@@ -42,16 +53,20 @@ export function TemplateDetailPage() {
 
       <div className="detail-grid">
         <div className="detail-column">
-          <div className="form-card">
-            <h2>Thông tin template</h2>
-            <dl className="detail-list">
+          <div className="form-card template-info-card">
+            <div className="template-card-head">
+              <h2>Thông tin template</h2>
+              <span className="section-chip">{template.version}</span>
+            </div>
+
+            <dl className="detail-list detail-list--stacked">
               <div>
                 <dt>Mã template</dt>
                 <dd>{template.code}</dd>
               </div>
               <div>
-                <dt>Tên template</dt>
-                <dd>{template.name}</dd>
+                <dt>Version</dt>
+                <dd>{template.version}</dd>
               </div>
               <div>
                 <dt>Loại khảo sát</dt>
@@ -79,28 +94,35 @@ export function TemplateDetailPage() {
                 <dt>Bộ phận phụ trách</dt>
                 <dd>{template.ownerTeam}</dd>
               </div>
+              <div>
+                <dt>Cập nhật gần nhất</dt>
+                <dd>
+                  {template.updatedAt}
+                  <br />
+                  <span className="muted-text">by {template.updatedBy}</span>
+                </dd>
+              </div>
             </dl>
           </div>
 
-          <div className="form-card info-box">
-            <h2>Lưu ý hệ thống</h2>
+          <div className="form-card info-box template-note-card">
+            <div className="template-card-head">
+              <h2>Lưu ý hệ thống</h2>
+            </div>
             <ul>
-              <li>Template quản lý nội dung khảo sát.</li>
-              <li>Điểm chạm quản lý ngữ cảnh nghiệp vụ như product, program, nguồn phát sinh.</li>
-              <li>Một template có thể được dùng ở nhiều điểm chạm.</li>
-              <li>
-                Cấu trúc object ảnh hưởng trực tiếp đến dữ liệu phản hồi theo object và khả năng báo
-                cáo.
-              </li>
+              <li>Template quản lý nội dung khảo sát, không quản lý context nghiệp vụ.</li>
+              <li>Product, Program, nguồn phát sinh và trigger event sẽ thuộc module Điểm chạm.</li>
+              <li>Một template có thể được dùng tại nhiều điểm chạm khác nhau.</li>
+              <li>Cấu trúc object ảnh hưởng trực tiếp đến dữ liệu phản hồi và khả năng phân tích.</li>
             </ul>
           </div>
         </div>
 
         <div className="detail-column detail-column--wide">
-          <div className="form-card">
+          <div className="form-card template-detail-section">
             <div className="section-header">
               <h2>Cấu trúc object trong template</h2>
-              <span className="section-chip">{template.objects.length} OBJECTS</span>
+              <span className="section-chip">{template.objects.length} objects</span>
             </div>
 
             <div className="object-stack">
@@ -109,7 +131,12 @@ export function TemplateDetailPage() {
                   <div className="object-card__index">{String(object.displayOrder).padStart(2, '0')}</div>
                   <div className="object-card__body">
                     <div className="object-card__header">
-                      <strong>{object.type}</strong>
+                      <div>
+                        <strong>{object.type}</strong>
+                        <div className="muted-text object-card__meta-code">
+                          {object.refCode}_{String(object.displayOrder).padStart(2, '0')}
+                        </div>
+                      </div>
                       <div className="object-card__badges">
                         <span className="survey-pill">{object.questionType}</span>
                         <span className="survey-pill survey-pill--ghost">
@@ -120,9 +147,6 @@ export function TemplateDetailPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="muted-text">
-                      {object.refCode}_{String(object.displayOrder).padStart(2, '0')}
-                    </div>
                     <p>"{object.question}"</p>
                   </div>
                 </article>
@@ -130,7 +154,7 @@ export function TemplateDetailPage() {
             </div>
           </div>
 
-          <div className="form-card">
+          <div className="form-card template-detail-section">
             <div className="section-header">
               <h2>Điểm chạm đang sử dụng</h2>
               <button className="button button--ghost" type="button" onClick={() => setShowUsageDrawer(true)}>
@@ -138,30 +162,38 @@ export function TemplateDetailPage() {
               </button>
             </div>
 
-            <table className="data-table">
+            <table className="data-table template-touchpoint-table">
               <thead>
                 <tr>
                   <th>Mã điểm chạm</th>
                   <th>Tên điểm chạm</th>
-                  <th>Hệ thống nguồn</th>
-                  <th>Product</th>
-                  <th>Program</th>
-                  <th>Trạng thái mapping</th>
+                  <th>Nguồn</th>
+                  <th>Sản phẩm</th>
+                  <th>Chương trình</th>
+                  <th>Mapping</th>
                 </tr>
               </thead>
               <tbody>
-                {template.touchpoints.map((touchpoint) => (
-                  <tr key={touchpoint.id}>
-                    <td className="code-cell">{touchpoint.id}</td>
-                    <td>{touchpoint.name}</td>
-                    <td>{touchpoint.sourceSystem}</td>
-                    <td>{touchpoint.product}</td>
-                    <td>{touchpoint.program}</td>
-                    <td>
-                      <StatusChip status={touchpoint.status} />
+                {template.touchpoints.length > 0 ? (
+                  template.touchpoints.map((touchpoint) => (
+                    <tr key={touchpoint.id}>
+                      <td className="code-cell">{touchpoint.id}</td>
+                      <td>{touchpoint.name}</td>
+                      <td>{touchpoint.sourceSystem}</td>
+                      <td>{touchpoint.product}</td>
+                      <td>{touchpoint.program}</td>
+                      <td>
+                        <StatusChip status={touchpoint.status} />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td className="muted-text" colSpan={6}>
+                      Template này hiện chưa được gắn với điểm chạm nào.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
