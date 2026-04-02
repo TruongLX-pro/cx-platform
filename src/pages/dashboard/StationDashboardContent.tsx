@@ -209,7 +209,7 @@ export function StationDashboardContent({
                 <span className="material-symbols-outlined">location_on</span>
               </div>
               <div>
-                <h2>Cơ sở rủi ro</h2>
+                <h2>Đánh giá Cơ sở</h2>
                 <p>Phân tích rủi ro vận hành offline theo cơ sở</p>
               </div>
             </div>
@@ -258,7 +258,7 @@ export function StationDashboardContent({
         <section className="station-card station-card--table">
           <div className="station-card__header">
             <div>
-              <h2>Điểm chạm rủi ro tại cơ sở</h2>
+              <h2>Điểm chạm rủi ro</h2>
               <p>Phân tích sâu các điểm giao tiếp thực tế</p>
             </div>
             <button className="station-link-button" type="button">

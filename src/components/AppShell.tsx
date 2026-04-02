@@ -20,10 +20,12 @@ export function AppShell() {
       <aside className={`sidebar${collapsed ? ' sidebar--collapsed' : ''}`}>
         <div className="sidebar__panel">
           <div className="sidebar__brand">
-            <div className="sidebar__brand-mark">
-              <img className="sidebar__brand-mascot" src={mascotUrl} alt="RinoEdu mascot" />
-              <div className="sidebar__brand-copy">
-                <img className="sidebar__brand-wordmark" src={wordmarkUrl} alt="RinoEdu" />
+            <div className="sidebar__brand-top">
+              <div className="sidebar__brand-mark">
+                <img className="sidebar__brand-mascot" src={mascotUrl} alt="RinoEdu mascot" />
+                <div className="sidebar__brand-copy">
+                  <img className="sidebar__brand-wordmark" src={wordmarkUrl} alt="RinoEdu" />
+                </div>
               </div>
               <button
                 className="sidebar__collapse"
@@ -32,7 +34,7 @@ export function AppShell() {
                 onClick={() => setCollapsed((value) => !value)}
               >
                 <span className="material-symbols-outlined" aria-hidden="true">
-                  {collapsed ? 'chevron_right' : 'chevron_left'}
+                  {collapsed ? 'menu' : 'keyboard_double_arrow_left'}
                 </span>
               </button>
             </div>

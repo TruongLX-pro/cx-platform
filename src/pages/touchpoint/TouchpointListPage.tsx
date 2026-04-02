@@ -5,7 +5,6 @@ import { StatusChip } from '../../components/StatusChip'
 import {
   productOptions,
   programOptions,
-  recordTypeLabels,
   respondentOptions,
   sourceSystemOptions,
   touchpointRecords,
@@ -60,7 +59,6 @@ export function TouchpointListPage() {
     <section className="touchpoint-page touchpoint-page--list">
       <div className="page-header">
         <div>
-          <div className="page-header__eyebrow">CX Platform</div>
           <h1>Danh sách điểm chạm</h1>
           <p>
             Quản lý ngữ cảnh phát sinh phản hồi, màn hình nghiệp vụ và các template đang map với
@@ -122,12 +120,10 @@ export function TouchpointListPage() {
         <table className="data-table data-table--touchpoint-list">
           <thead>
             <tr>
-              <th>Mã điểm chạm</th>
-              <th>Tên điểm chạm</th>
+              <th>Điểm chạm</th>
               <th>Loại</th>
               <th>Nguồn</th>
-              <th>Sản phẩm</th>
-              <th>Chương trình</th>
+              <th>Sản phẩm / Chương trình</th>
               <th>Màn hình</th>
               <th>Template map</th>
               <th>Trạng thái</th>
@@ -141,7 +137,7 @@ export function TouchpointListPage() {
               ))
             ) : (
               <tr>
-                <td className="muted-text" colSpan={10}>
+                <td className="muted-text" colSpan={8}>
                   Không tìm thấy điểm chạm phù hợp với bộ lọc hiện tại.
                 </td>
               </tr>
@@ -173,14 +169,10 @@ export function TouchpointListPage() {
 function TouchpointRow({ touchpoint }: { touchpoint: TouchpointRecord }) {
   return (
     <tr>
-      <td className="code-cell">
-        <div>{touchpoint.code}</div>
-        <div className="muted-text">{recordTypeLabels[touchpoint.recordType]}</div>
-      </td>
-      <td>
+      <td className="touchpoint-name-cell">
         <div className="stacked">
           <strong className="touchpoint-table__title">{touchpoint.name}</strong>
-          <span className="muted-text">{touchpoint.ownerTeam}</span>
+          <span className="code-cell">{touchpoint.code}</span>
         </div>
       </td>
       <td>
@@ -192,8 +184,12 @@ function TouchpointRow({ touchpoint }: { touchpoint: TouchpointRecord }) {
         </div>
       </td>
       <td>{touchpoint.sourceSystem}</td>
-      <td>{touchpoint.product}</td>
-      <td>{touchpoint.program}</td>
+      <td>
+        <div className="stacked">
+          <span>{touchpoint.product}</span>
+          <span className="muted-text">{touchpoint.program}</span>
+        </div>
+      </td>
       <td>
         <div className="stacked">
           <span className="code-cell">{touchpoint.screenCode}</span>
