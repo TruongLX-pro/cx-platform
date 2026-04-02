@@ -1,27 +1,35 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { DeactivateModal } from '../../components/DeactivateModal'
 import { StatusChip } from '../../components/StatusChip'
 import { TouchpointUsageDrawer } from '../../components/TouchpointUsageDrawer'
-import { templateRecords } from '../../data/templateData'
+import { templateRecords, upsertTemplateRecord } from '../../data/templateData'
+import { getTouchpointsUsingTemplate } from '../../data/touchpointData'
+import type { TemplateRecord } from '../../types'
 
 export function TemplateDetailPage() {
   const { templateId } = useParams()
-  const template = useMemo(
+  const resolvedTemplate = useMemo(
     () => templateRecords.find((record) => record.id === templateId) ?? templateRecords[0],
     [templateId],
   )
+  const [template, setTemplate] = useState<TemplateRecord>(resolvedTemplate)
   const [showUsageDrawer, setShowUsageDrawer] = useState(false)
   const [showDeactivateModal, setShowDeactivateModal] = useState(false)
 
+  useEffect(() => {
+    setTemplate(resolvedTemplate)
+  }, [resolvedTemplate])
+
+  const touchpoints = useMemo(() => getTouchpointsUsingTemplate(template.id), [template.id])
+
   return (
     <section className="template-detail-page template-page--detail">
-      {template.touchpoints.length > 0 ? (
+      {touchpoints.length > 0 ? (
         <div className="warning-banner warning-banner--wide">
           <span className="material-symbols-outlined warning-banner__icon">warning</span>
           <span>
-            Template này hiện đang được sử dụng tại {template.touchpoints.length} điểm chạm. Hãy
-            kiểm tra ảnh hưởng trước khi chỉnh sửa hoặc ngừng sử dụng.
+            Template này hiện đang được sử dụng tại {touchpoints.length} điểm chạm. Hãy kiểm tra ảnh hưởng trước khi chỉnh sửa hoặc ngừng sử dụng.
           </span>
         </div>
       ) : null}
@@ -44,9 +52,10 @@ export function TemplateDetailPage() {
             className="button button--danger-ghost"
             type="button"
             onClick={() => setShowDeactivateModal(true)}
+            disabled={template.status === 'Ngừng sử dụng'}
           >
             <span className="material-symbols-outlined">block</span>
-            Ngừng sử dụng
+            {template.status === 'Ngừng sử dụng' ? 'Đã ngừng sử dụng' : 'Ngừng sử dụng'}
           </button>
         </div>
       </div>
@@ -56,17 +65,13 @@ export function TemplateDetailPage() {
           <div className="form-card template-info-card">
             <div className="template-card-head">
               <h2>Thông tin template</h2>
-              <span className="section-chip">{template.version}</span>
+              <span className="section-chip">{template.status}</span>
             </div>
 
             <dl className="detail-list detail-list--stacked">
               <div>
                 <dt>Mã template</dt>
                 <dd>{template.code}</dd>
-              </div>
-              <div>
-                <dt>Version</dt>
-                <dd>{template.version}</dd>
               </div>
               <div>
                 <dt>Loại khảo sát</dt>
@@ -174,11 +179,19 @@ export function TemplateDetailPage() {
                 </tr>
               </thead>
               <tbody>
-                {template.touchpoints.length > 0 ? (
-                  template.touchpoints.map((touchpoint) => (
-                    <tr key={touchpoint.id}>
-                      <td className="code-cell">{touchpoint.id}</td>
-                      <td>{touchpoint.name}</td>
+                {touchpoints.length > 0 ? (
+                  touchpoints.map((touchpoint) => (
+                    <tr key={`${touchpoint.routeId}-${touchpoint.displayOrder}`}>
+                      <td className="code-cell">
+                        <Link className="touchpoint-link" to={`/touchpoints/${touchpoint.routeId}`}>
+                          {touchpoint.id}
+                        </Link>
+                      </td>
+                      <td>
+                        <Link className="touchpoint-link" to={`/touchpoints/${touchpoint.routeId}`}>
+                          {touchpoint.name}
+                        </Link>
+                      </td>
                       <td>{touchpoint.sourceSystem}</td>
                       <td>{touchpoint.product}</td>
                       <td>{touchpoint.program}</td>
@@ -206,8 +219,26 @@ export function TemplateDetailPage() {
       />
       <DeactivateModal
         onClose={() => setShowDeactivateModal(false)}
+        onConfirm={handleDeactivateTemplate}
         template={showDeactivateModal ? template : null}
       />
     </section>
   )
+
+  function handleDeactivateTemplate() {
+    const nextRecord: TemplateRecord = {
+      ...template,
+      status: 'Ngừng sử dụng',
+      updatedAt: formatToday(),
+      updatedBy: 'Codex',
+    }
+
+    upsertTemplateRecord(nextRecord)
+    setTemplate(nextRecord)
+    setShowDeactivateModal(false)
+  }
+}
+
+function formatToday() {
+  return new Intl.DateTimeFormat('en-GB').format(new Date())
 }

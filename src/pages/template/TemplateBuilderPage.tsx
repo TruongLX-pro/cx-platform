@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CustomSelect } from '../../components/CustomSelect'
 import { TemplateObjectDrawer } from '../../components/TemplateObjectDrawer'
 import {
@@ -7,6 +7,7 @@ import {
   respondentOptions,
   surveyTypeOptions,
   templateRecords,
+  upsertTemplateRecord,
 } from '../../data/templateData'
 import type {
   ObjectMode,
@@ -14,6 +15,7 @@ import type {
   SurveyType,
   TemplateObject,
   TemplateRecord,
+  TemplateStatus,
 } from '../../types'
 
 interface TemplateBuilderPageProps {
@@ -28,7 +30,7 @@ interface BuilderFormState {
   respondentType: RespondentType
   objectMode: ObjectMode
   ownerTeam: string
-  status: string
+  status: TemplateStatus
 }
 
 interface EditingObjectState {
@@ -37,7 +39,10 @@ interface EditingObjectState {
 }
 
 export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
+  const navigate = useNavigate()
+  const previewRef = useRef<HTMLElement | null>(null)
   const { templateId } = useParams()
+
   const template = useMemo<TemplateRecord>(() => {
     if (mode === 'edit' && templateId) {
       return templateRecords.find((record) => record.id === templateId) ?? templateRecords[0]
@@ -54,8 +59,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
         objectMode: 'single',
         status: 'Nháp',
         ownerTeam: 'Khối học thuật',
-        version: 'v1.0',
-        updatedAt: '31/03/2026',
+        updatedAt: formatToday(),
         updatedBy: 'Codex',
         objects: [
           {
@@ -86,8 +90,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
       objectMode: 'multi',
       status: 'Nháp',
       ownerTeam: 'Chăm sóc khách hàng',
-      version: 'v1.0',
-      updatedAt: '31/03/2026',
+      updatedAt: formatToday(),
       updatedBy: 'Codex',
       objects: templateRecords[0].objects,
       touchpoints: [],
@@ -135,8 +138,41 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
   const builderTitle = mode === 'edit' ? 'Chỉnh sửa template' : 'Tạo template khảo sát'
 
   const requiredCode = form.code.trim()
+  const requiredName = form.name.trim()
   const requiredGoal = form.goal.trim()
   const hasObjects = visibleObjects.length > 0
+
+  const initialSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        form: {
+          code: template.code,
+          name: template.name,
+          surveyType: template.surveyType,
+          goal: template.goal,
+          respondentType: template.respondentType,
+          objectMode: mode === 'single' ? 'single' : template.objectMode,
+          ownerTeam: template.ownerTeam,
+          status: template.status,
+        },
+        objects: normalizeObjects(
+          template.objects
+            .map((item) => ({ ...item }))
+            .slice(0, mode === 'single' ? 1 : template.objects.length),
+        ),
+      }),
+    [mode, template],
+  )
+
+  const currentSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        form,
+        objects: normalizeObjects(visibleObjects.map((item) => ({ ...item }))),
+      }),
+    [form, visibleObjects],
+  )
+  const hasUnsavedChanges = currentSnapshot !== initialSnapshot
 
   return (
     <section className="template-builder-page template-page--builder">
@@ -150,16 +186,16 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
           <h1>{builderTitle}</h1>
         </div>
         <div className="builder-toolbar__actions">
-          <button className="button button--ghost" type="button">
+          <button className="button button--ghost" type="button" onClick={handleCancel}>
             Hủy
           </button>
-          <button className="button button--ghost" type="button">
+          <button className="button button--ghost" type="button" onClick={handleSaveDraft}>
             Lưu nháp
           </button>
-          <button className="button button--ghost" type="button">
+          <button className="button button--ghost" type="button" onClick={handlePreview}>
             Xem trước
           </button>
-          <button className="button button--primary" type="button">
+          <button className="button button--primary" type="button" onClick={handleActivate}>
             Kích hoạt
           </button>
         </div>
@@ -194,6 +230,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
                     placeholder="Nhập tên khảo sát..."
                     onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
                   />
+                  {!requiredName ? <small className="field-error">Tên template là bắt buộc</small> : null}
                 </label>
               </div>
 
@@ -256,8 +293,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
             </div>
 
             <div className="inline-note inline-note--soft">
-              Template chỉ quản lý nội dung khảo sát. Product, Program, trigger event và điểm chạm
-              sử dụng sẽ được quản lý ở module Điểm chạm.
+              Template chỉ quản lý nội dung khảo sát. Product, Program, trigger event và điểm chạm sử dụng sẽ được quản lý ở module Điểm chạm.
             </div>
           </div>
 
@@ -286,8 +322,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
 
             {!hasObjects ? (
               <div className="inline-note inline-note--soft">
-                Template hiện chưa có object nào. Hãy thêm ít nhất một object để có thể kích hoạt
-                template.
+                Template hiện chưa có object nào. Hãy thêm ít nhất một object để có thể kích hoạt template.
               </div>
             ) : null}
 
@@ -344,7 +379,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
           </div>
         </div>
 
-        <aside className="builder-preview">
+        <aside className="builder-preview" ref={previewRef}>
           <div className="builder-preview__head">
             <h3>Xem trước cấu trúc</h3>
             <p>{form.name || 'Template đang soạn'} hiển thị như thế nào với người phản hồi.</p>
@@ -404,6 +439,67 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
     </section>
   )
 
+  function handleCancel() {
+    if (hasUnsavedChanges && !window.confirm('Các thay đổi chưa lưu sẽ bị mất. Tiếp tục hủy?')) {
+      return
+    }
+
+    if (mode === 'edit') {
+      navigate(`/templates/${template.id}`)
+      return
+    }
+
+    navigate('/templates')
+  }
+
+  function handlePreview() {
+    previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function handleSaveDraft() {
+    const savedRecord = persistTemplate('Nháp')
+    navigate(`/templates/${savedRecord.id}`)
+  }
+
+  function handleActivate() {
+    if (!requiredCode || !requiredName || !requiredGoal) {
+      window.alert('Cần nhập đầy đủ mã template, tên template và mục tiêu khảo sát trước khi kích hoạt.')
+      return
+    }
+
+    if (!hasObjects) {
+      window.alert('Template cần có ít nhất một object trước khi kích hoạt.')
+      return
+    }
+
+    const savedRecord = persistTemplate('Đang hoạt động')
+    navigate(`/templates/${savedRecord.id}`)
+  }
+
+  function persistTemplate(nextStatus: TemplateStatus) {
+    const nextRecord: TemplateRecord = {
+      id: buildTemplateId(template.id, form.code, form.name),
+      code: form.code.trim(),
+      name: form.name.trim(),
+      surveyType: form.surveyType,
+      goal: form.goal.trim(),
+      respondentType: form.respondentType,
+      objectMode: isSingle ? 'single' : form.objectMode,
+      status: nextStatus,
+      ownerTeam: form.ownerTeam,
+      updatedAt: formatToday(),
+      updatedBy: 'Codex',
+      objects: normalizeObjects(
+        visibleObjects.map((item) => ({
+          ...item,
+        })),
+      ),
+      touchpoints: [],
+    }
+
+    return upsertTemplateRecord(nextRecord)
+  }
+
   function removeObject(objectId: string) {
     setObjects((current) => normalizeObjects(current.filter((item) => item.id !== objectId)))
   }
@@ -448,4 +544,26 @@ function normalizeObjects(objects: TemplateObject[]) {
     ...item,
     displayOrder: index + 1,
   }))
+}
+
+function buildTemplateId(currentId: string, code: string, name: string) {
+  if (currentId && !currentId.startsWith('draft-')) {
+    return currentId
+  }
+
+  const seed = code || name || `template-${Date.now()}`
+  return slugify(seed)
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function formatToday() {
+  return new Intl.DateTimeFormat('en-GB').format(new Date())
 }

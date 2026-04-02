@@ -2,11 +2,13 @@ import { templateRecords } from './templateData'
 import type {
   ProductType,
   RespondentType,
+  TemplateRecord,
   TouchpointRecord,
   TouchpointStatus,
   TouchpointSurveyType,
   TouchpointTemplateMapping,
   TouchpointType,
+  TouchpointUsage,
 } from '../types'
 
 const templateById = new Map(templateRecords.map((template) => [template.id, template]))
@@ -34,6 +36,29 @@ export interface TouchpointScreenOption {
   name: string
   touchpointType: TouchpointType
   recordType: TouchpointRecord['recordType']
+}
+
+export const productOptionsByType: Record<ProductType, string[]> = {
+  Tutor: ['Rino Edu'],
+  Station: ['Rino Station'],
+  Digital: ['Rino Digi', 'Ieltspeed'],
+}
+
+export const programOptionsByProduct: Record<string, string[]> = {
+  'Rino Edu': [
+    'Tiếng Anh Cambridge',
+    'Tiếng Anh Kindie Tutor',
+    'Chương trình Toán tư duy Tutor',
+  ],
+  'Rino Station': ['Tiếng Anh Station', 'Toán tư duy Station'],
+  'Rino Digi': ['Tiếng Anh Digital Teacher'],
+  Ieltspeed: ['Tiếng Anh IELTS'],
+}
+
+export const sourceSystemsByTouchpointType: Record<TouchpointType, string[]> = {
+  survey: ['CX Automation', 'CRM', 'Station Ops', 'Digital App'],
+  complaint: ['Care CRM', 'Station Ops'],
+  support: ['App/Web', 'Digital App'],
 }
 
 export const touchpointRecords: TouchpointRecord[] = [
@@ -196,25 +221,10 @@ export const touchpointSummaryMetrics = {
 
 export const touchpointTypeOptions: TouchpointType[] = ['survey', 'complaint', 'support']
 export const touchpointStatusOptions: TouchpointStatus[] = ['Active', 'Inactive']
-export const sourceSystemOptions = [
-  'CX Automation',
-  'CRM',
-  'Station Ops',
-  'Digital App',
-  'Care CRM',
-  'App/Web',
-]
-export const productOptions = ['Rino Edu', 'Rino Station', 'Rino Digi', 'Ieltspeed']
 export const productTypeOptions: ProductType[] = ['Tutor', 'Digital', 'Station']
-export const programOptions = [
-  'Tiếng Anh Cambridge',
-  'Tiếng Anh IELTS',
-  'Tiếng Anh Kindie Tutor',
-  'Chương trình Toán tư duy Tutor',
-  'Tiếng Anh Station',
-  'Toán tư duy Station',
-  'Tiếng Anh Digital Teacher',
-]
+export const productOptions = Object.values(productOptionsByType).flat()
+export const programOptions = Object.values(programOptionsByProduct).flat()
+export const sourceSystemOptions = Object.values(sourceSystemsByTouchpointType).flat()
 export const respondentOptions: RespondentType[] = ['Phụ huynh', 'Học sinh']
 export const surveyTypeOptions: TouchpointSurveyType[] = ['CSAT', 'NPS', 'CES', 'CUSTOM', 'Không áp dụng']
 export const touchpointScreenOptions: TouchpointScreenOption[] = [
@@ -291,6 +301,46 @@ export function getRecordTypeByTouchpointType(touchpointType: TouchpointType): T
   return 'survey_feedback'
 }
 
+export function getProductOptionsByType(productType: ProductType) {
+  return productOptionsByType[productType] ?? []
+}
+
+export function getDefaultProductForType(productType: ProductType) {
+  return getProductOptionsByType(productType)[0] ?? ''
+}
+
+export function getProgramOptionsByProduct(product: string) {
+  return programOptionsByProduct[product] ?? []
+}
+
+export function getDefaultProgramForProduct(product: string) {
+  return getProgramOptionsByProduct(product)[0] ?? ''
+}
+
+export function getSourceSystemOptionsByType(touchpointType: TouchpointType) {
+  return sourceSystemsByTouchpointType[touchpointType] ?? []
+}
+
+export function getDefaultSourceSystem(touchpointType: TouchpointType, productType: ProductType) {
+  if (touchpointType === 'complaint') {
+    return productType === 'Station' ? 'Station Ops' : 'Care CRM'
+  }
+
+  if (touchpointType === 'support') {
+    return productType === 'Digital' ? 'App/Web' : 'Digital App'
+  }
+
+  if (productType === 'Station') {
+    return 'Station Ops'
+  }
+
+  if (productType === 'Digital') {
+    return 'Digital App'
+  }
+
+  return 'CX Automation'
+}
+
 export function buildTouchpointTemplateMappings(
   templateIds: string[],
   defaultTemplateId: string | null,
@@ -311,4 +361,69 @@ export function buildTouchpointTemplateMappings(
 
 export function getTouchpointTemplateSummary(templateIds: string[], defaultTemplateId: string | null) {
   return buildTouchpointTemplateMappings(templateIds, defaultTemplateId)
+}
+
+export function isTemplateCompatibleWithTouchpoint(
+  template: TemplateRecord,
+  context: {
+    touchpointType: TouchpointType
+    respondentType: RespondentType
+    surveyType: TouchpointSurveyType
+  },
+) {
+  if (context.touchpointType !== 'survey') {
+    return false
+  }
+
+  if (template.status !== 'Đang hoạt động') {
+    return false
+  }
+
+  if (template.respondentType !== context.respondentType) {
+    return false
+  }
+
+  return template.surveyType === context.surveyType
+}
+
+export function getCompatibleTemplatesForTouchpoint(context: {
+  touchpointType: TouchpointType
+  respondentType: RespondentType
+  surveyType: TouchpointSurveyType
+}) {
+  return templateRecords.filter((template) => isTemplateCompatibleWithTouchpoint(template, context))
+}
+
+export function getTouchpointsUsingTemplate(templateId: string): TouchpointUsage[] {
+  return touchpointRecords
+    .filter((touchpoint) => touchpoint.templates.some((mapping) => mapping.templateId === templateId))
+    .map((touchpoint) => {
+      const mapping = touchpoint.templates.find((item) => item.templateId === templateId)
+
+      return {
+        routeId: touchpoint.id,
+        id: touchpoint.code,
+        name: touchpoint.name,
+        sourceSystem: touchpoint.sourceSystem,
+        product: touchpoint.product,
+        productType: touchpoint.productType,
+        program: touchpoint.program,
+        status: touchpoint.status,
+        isDefault: mapping?.isDefault ?? false,
+        displayOrder: mapping?.displayOrder ?? 0,
+      }
+    })
+    .sort((left, right) => left.displayOrder - right.displayOrder)
+}
+
+export function upsertTouchpointRecord(nextRecord: TouchpointRecord) {
+  const currentIndex = touchpointRecords.findIndex((record) => record.id === nextRecord.id)
+
+  if (currentIndex >= 0) {
+    touchpointRecords[currentIndex] = nextRecord
+    return nextRecord
+  }
+
+  touchpointRecords.unshift(nextRecord)
+  return nextRecord
 }

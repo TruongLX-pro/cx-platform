@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { StatusChip } from '../../components/StatusChip'
@@ -8,25 +8,28 @@ import {
   recordTypeLabels,
   touchpointRecords,
   touchpointTypeLabels,
+  upsertTouchpointRecord,
 } from '../../data/touchpointData'
+import type { TouchpointRecord } from '../../types'
 
 export function TouchpointDetailPage() {
   const { touchpointId } = useParams()
-  const touchpoint = useMemo(
+  const resolvedTouchpoint = useMemo(
     () => touchpointRecords.find((record) => record.id === touchpointId) ?? touchpointRecords[0],
     [touchpointId],
   )
+  const [touchpoint, setTouchpoint] = useState<TouchpointRecord>(resolvedTouchpoint)
+
+  useEffect(() => {
+    setTouchpoint(resolvedTouchpoint)
+  }, [resolvedTouchpoint])
 
   return (
     <section className="touchpoint-page touchpoint-page--detail">
       <div className="warning-banner warning-banner--wide touchpoint-warning-banner">
         <span className="material-symbols-outlined warning-banner__icon">info</span>
         <span>
-          Từ <strong>touchpoint_id</strong> có thể lần ra <strong>touchpoint_type</strong>,{' '}
-          <strong>source_system</strong>, <strong>screen_code</strong> và{' '}
-          <strong>screen_name</strong>. <strong>source_system</strong> là hệ thống phát sinh dữ
-          liệu, còn <strong>screen_code / screen_name</strong> là màn hình nghiệp vụ gắn với
-          touchpoint.
+          Từ <strong>touchpoint_id</strong> có thể lần ra <strong>touchpoint_type</strong>, <strong>source_system</strong>, <strong>screen_code</strong> và <strong>screen_name</strong>. <strong>source_system</strong> là hệ thống phát sinh dữ liệu, còn <strong>screen_code / screen_name</strong> là màn hình nghiệp vụ gắn với touchpoint.
         </span>
       </div>
 
@@ -47,9 +50,14 @@ export function TouchpointDetailPage() {
             <span className="material-symbols-outlined">edit</span>
             Chỉnh sửa
           </Link>
-          <button className="button button--danger-ghost" type="button">
+          <button
+            className="button button--danger-ghost"
+            type="button"
+            onClick={handleDeactivate}
+            disabled={touchpoint.status === 'Inactive'}
+          >
             <span className="material-symbols-outlined">block</span>
-            Ngừng sử dụng
+            {touchpoint.status === 'Inactive' ? 'Đã ngừng sử dụng' : 'Ngừng sử dụng'}
           </button>
         </div>
       </div>
@@ -103,12 +111,9 @@ export function TouchpointDetailPage() {
               <h2>Ghi chú hệ thống</h2>
             </div>
             <ul>
-              <li>survey_response, complaint_case và issue_report đều kế thừa touchpoint_id.</li>
-              <li>
-                Từ touchpoint_id có thể truy ra touchpoint_type, source_system, screen_code và
-                screen_name.
-              </li>
-              <li>screen_code / screen_name là màn hình nghiệp vụ, không thay thế source_system.</li>
+              <li>`survey_feedback`, `complaint_case` và `issue_report` đều kế thừa `touchpoint_id`.</li>
+              <li>Từ `touchpoint_id` có thể truy ra `touchpoint_type`, `source_system`, `screen_code` và `screen_name`.</li>
+              <li>`screen_code / screen_name` là màn hình nghiệp vụ, không thay thế `source_system`.</li>
               <li>Complaint và support có thể không cần mapping template nếu chỉ dùng để ghi nhận.</li>
             </ul>
           </div>
@@ -151,9 +156,9 @@ export function TouchpointDetailPage() {
                         </td>
                         <td>
                           <div className="stacked">
-                            <span>{template?.surveyType ?? 'CSAT'}</span>
+                            <span>{template?.surveyType ?? 'Không xác định'}</span>
                             <span className="muted-text">
-                              {template?.objectMode === 'multi' ? 'Multi-object' : 'Single-object'}
+                              {template ? (template.objectMode === 'multi' ? 'Multi-object' : 'Single-object') : 'Không xác định'}
                             </span>
                           </div>
                         </td>
@@ -173,8 +178,7 @@ export function TouchpointDetailPage() {
               </table>
             ) : (
               <div className="inline-note inline-note--soft touchpoint-empty-note">
-                Touchpoint này chưa gắn template. Nếu là complaint/support, đây có thể là trạng thái
-                hợp lệ trong giai đoạn đầu.
+                Touchpoint này chưa gắn template. Nếu là complaint/support, đây có thể là trạng thái hợp lệ trong giai đoạn đầu.
               </div>
             )}
           </div>
@@ -184,16 +188,40 @@ export function TouchpointDetailPage() {
               <h2>Nguyên tắc dữ liệu</h2>
             </div>
             <ul>
-              <li>product / program / source_system là lớp ngữ cảnh phát sinh phản hồi.</li>
-              <li>screen_code / screen_name mô tả màn hình nghiệp vụ chuẩn hóa.</li>
-              <li>touchpoint_type dùng để phân loại luồng dữ liệu: survey, complaint hoặc support.</li>
-              <li>Module Data sẽ đọc touchpoint_id để dựng survey_feedback, complaint_case và issue_report.</li>
+              <li>`product / program / source_system` là lớp ngữ cảnh phát sinh phản hồi.</li>
+              <li>`screen_code / screen_name` mô tả màn hình nghiệp vụ chuẩn hóa.</li>
+              <li>`touchpoint_type` dùng để phân loại luồng dữ liệu: survey, complaint hoặc support.</li>
+              <li>Module Data sẽ đọc `touchpoint_id` để dựng `survey_feedback`, `complaint_case` và `issue_report`.</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
   )
+
+  function handleDeactivate() {
+    if (touchpoint.status === 'Inactive') {
+      return
+    }
+
+    const confirmed = window.confirm(
+      `Ngừng sử dụng điểm chạm "${touchpoint.name}"? Touchpoint sẽ được chuyển sang trạng thái Inactive.`,
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    const nextRecord: TouchpointRecord = {
+      ...touchpoint,
+      status: 'Inactive',
+      updatedAt: formatToday(),
+      updatedBy: 'Codex',
+    }
+
+    upsertTouchpointRecord(nextRecord)
+    setTouchpoint(nextRecord)
+  }
 }
 
 function InfoItem({
@@ -218,4 +246,8 @@ function DetailStatCard({ label, value }: { label: string; value: string }) {
       <div className="touchpoint-detail-stat-card__value">{value}</div>
     </article>
   )
+}
+
+function formatToday() {
+  return new Intl.DateTimeFormat('en-GB').format(new Date())
 }

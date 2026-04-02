@@ -17,7 +17,6 @@ export const templateRecords: TemplateRecord[] = [
     objectMode: 'multi',
     status: 'Đang hoạt động',
     ownerTeam: 'Chăm sóc khách hàng',
-    version: 'v3.2',
     updatedAt: '28/03/2026',
     updatedBy: 'Linh Vũ',
     objects: [
@@ -61,30 +60,7 @@ export const templateRecords: TemplateRecord[] = [
         maxScore: 5,
       },
     ],
-    touchpoints: [
-      {
-        id: 'TP_TUTOR_MID_COURSE',
-        name: 'Khảo sát giữa khóa Tutor',
-        sourceSystem: 'CX Automation',
-        product: 'Rino Edu',
-        productType: 'Tutor',
-        program: 'Tiếng Anh Cambridge',
-        status: 'Active',
-        isDefault: true,
-        displayOrder: 1,
-      },
-      {
-        id: 'TP_TUTOR_10_SESSIONS',
-        name: 'Khảo sát sau 10 buổi học',
-        sourceSystem: 'CRM',
-        product: 'Rino Edu',
-        productType: 'Tutor',
-        program: 'Tiếng Anh Kindie Tutor',
-        status: 'Active',
-        isDefault: false,
-        displayOrder: 2,
-      },
-    ],
+    touchpoints: [],
   },
   {
     id: 'end-course-nps-single',
@@ -96,7 +72,6 @@ export const templateRecords: TemplateRecord[] = [
     objectMode: 'single',
     status: 'Nháp',
     ownerTeam: 'Khối học thuật',
-    version: 'v1.0',
     updatedAt: '30/03/2026',
     updatedBy: 'Trang Đỗ',
     objects: [
@@ -114,19 +89,7 @@ export const templateRecords: TemplateRecord[] = [
         maxScore: 10,
       },
     ],
-    touchpoints: [
-      {
-        id: 'TP_END_COURSE_IELTS',
-        name: 'Khảo sát cuối khóa IELTS',
-        sourceSystem: 'CRM',
-        product: 'Ieltspeed',
-        productType: 'Digital',
-        program: 'Tiếng Anh IELTS',
-        status: 'Active',
-        isDefault: true,
-        displayOrder: 1,
-      },
-    ],
+    touchpoints: [],
   },
   {
     id: 'trial-experience-csat',
@@ -138,7 +101,6 @@ export const templateRecords: TemplateRecord[] = [
     objectMode: 'single',
     status: 'Ngừng sử dụng',
     ownerTeam: 'Vận hành cơ sở',
-    version: 'v2.4',
     updatedAt: '21/03/2026',
     updatedBy: 'Minh Hoàng',
     objects: [
@@ -156,30 +118,7 @@ export const templateRecords: TemplateRecord[] = [
         maxScore: 5,
       },
     ],
-    touchpoints: [
-      {
-        id: 'TP_STATION_TRIAL',
-        name: 'Khảo sát sau buổi học thử tại cơ sở',
-        sourceSystem: 'Station Ops',
-        product: 'Rino Station',
-        productType: 'Station',
-        program: 'Tiếng Anh Station',
-        status: 'Inactive',
-        isDefault: true,
-        displayOrder: 1,
-      },
-      {
-        id: 'TP_STATION_CHECKIN',
-        name: 'Khảo sát sau check-in học thử',
-        sourceSystem: 'Station Ops',
-        product: 'Rino Station',
-        productType: 'Station',
-        program: 'Toán tư duy Station',
-        status: 'Inactive',
-        isDefault: false,
-        displayOrder: 2,
-      },
-    ],
+    touchpoints: [],
   },
   {
     id: 'parent-care-quarterly',
@@ -191,7 +130,6 @@ export const templateRecords: TemplateRecord[] = [
     objectMode: 'multi',
     status: 'Đang hoạt động',
     ownerTeam: 'Phòng trải nghiệm khách hàng',
-    version: 'v2.1',
     updatedAt: '26/03/2026',
     updatedBy: 'Thảo Phạm',
     objects: [
@@ -222,41 +160,7 @@ export const templateRecords: TemplateRecord[] = [
         maxScore: 5,
       },
     ],
-    touchpoints: [
-      {
-        id: 'TP_PARENT_QUARTERLY',
-        name: 'Khảo sát định kỳ phụ huynh quý I',
-        sourceSystem: 'CX Automation',
-        product: 'Rino Edu',
-        productType: 'Tutor',
-        program: 'Chương trình Toán tư duy Tutor',
-        status: 'Active',
-        isDefault: true,
-        displayOrder: 1,
-      },
-      {
-        id: 'TP_DIGI_PARENT_QUARTERLY',
-        name: 'Khảo sát định kỳ phụ huynh Digital',
-        sourceSystem: 'Digital App',
-        product: 'Rino Digi',
-        productType: 'Digital',
-        program: 'Tiếng Anh Digital Teacher',
-        status: 'Active',
-        isDefault: false,
-        displayOrder: 2,
-      },
-      {
-        id: 'TP_IELTS_PARENT_QUARTERLY',
-        name: 'Khảo sát định kỳ phụ huynh IELTS',
-        sourceSystem: 'CRM',
-        product: 'Ieltspeed',
-        productType: 'Digital',
-        program: 'Tiếng Anh IELTS',
-        status: 'Active',
-        isDefault: false,
-        displayOrder: 3,
-      },
-    ],
+    touchpoints: [],
   },
   {
     id: 'student-open-feedback',
@@ -268,7 +172,6 @@ export const templateRecords: TemplateRecord[] = [
     objectMode: 'single',
     status: 'Lưu trữ',
     ownerTeam: 'Digital Product',
-    version: 'v1.8',
     updatedAt: '12/03/2026',
     updatedBy: 'Khánh Lê',
     objects: [
@@ -289,10 +192,10 @@ export const templateRecords: TemplateRecord[] = [
 ]
 
 export const summaryMetrics = {
-  total: 26,
-  active: 12,
-  draft: 7,
-  multiObject: 8,
+  total: templateRecords.length,
+  active: templateRecords.filter((item) => item.status === 'Đang hoạt động').length,
+  draft: templateRecords.filter((item) => item.status === 'Nháp').length,
+  multiObject: templateRecords.filter((item) => item.objectMode === 'multi').length,
 }
 
 export const surveyTypeOptions: SurveyType[] = ['CSAT', 'NPS', 'CES', 'CUSTOM']
@@ -314,3 +217,15 @@ export const ownerTeamOptions = [
 ]
 
 export const sourceSystemOptions = ['CX Automation', 'CRM', 'Station Ops', 'Digital App']
+
+export function upsertTemplateRecord(nextRecord: TemplateRecord) {
+  const currentIndex = templateRecords.findIndex((record) => record.id === nextRecord.id)
+
+  if (currentIndex >= 0) {
+    templateRecords[currentIndex] = nextRecord
+    return nextRecord
+  }
+
+  templateRecords.unshift(nextRecord)
+  return nextRecord
+}

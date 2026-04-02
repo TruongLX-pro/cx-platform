@@ -235,9 +235,7 @@ export function TemplateObjectDrawer({
                 <div className="preview-card__title">{draft.name || 'Object mới'}</div>
                 <p>{draft.question || 'Câu hỏi chính sẽ hiển thị tại đây.'}</p>
 
-                {draft.questionType === 'Rating 1-5' ? (
-                  <div className="rating-preview">★ ★ ★ ★ ☆</div>
-                ) : null}
+                {draft.questionType === 'Rating 1-5' ? <div className="rating-preview">★ ★ ★ ★ ☆</div> : null}
 
                 {draft.questionType === 'NPS 0-10' ? (
                   <div className="nps-preview">
@@ -247,9 +245,7 @@ export function TemplateObjectDrawer({
                   </div>
                 ) : null}
 
-                {draft.questionType === 'Text' ? (
-                  <div className="text-preview">Ô nhập nội dung phản hồi</div>
-                ) : null}
+                {draft.questionType === 'Text' ? <div className="text-preview">Ô nhập nội dung phản hồi</div> : null}
 
                 {draft.allowComment ? (
                   <div className="comment-preview">Ý kiến góp ý thêm (không bắt buộc)</div>

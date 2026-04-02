@@ -1,12 +1,20 @@
+import { useMemo } from 'react'
 import type { TemplateRecord } from '../types'
+import { getTouchpointsUsingTemplate } from '../data/touchpointData'
 import { StatusChip } from './StatusChip'
 
 interface DeactivateModalProps {
   template: TemplateRecord | null
   onClose: () => void
+  onConfirm: () => void
 }
 
-export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
+export function DeactivateModal({ template, onClose, onConfirm }: DeactivateModalProps) {
+  const touchpoints = useMemo(
+    () => (template ? getTouchpointsUsingTemplate(template.id) : []),
+    [template],
+  )
+
   if (!template) return null
 
   return (
@@ -16,9 +24,7 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
         <div className="modal__icon">!</div>
         <h2>Ngừng sử dụng template?</h2>
         <p className="modal__lead">
-          Template <strong>"{template.name}"</strong> hiện đang được sử dụng tại{' '}
-          <strong>{template.touchpoints.length} điểm chạm</strong>. Sau khi ngừng sử dụng, template
-          sẽ không còn được áp dụng cho các cấu hình active mới.
+          Template <strong>"{template.name}"</strong> hiện đang được sử dụng tại <strong>{touchpoints.length} điểm chạm</strong>. Sau khi ngừng sử dụng, template sẽ không còn được áp dụng cho các cấu hình active mới.
         </p>
 
         <div className="modal__summary">
@@ -32,7 +38,7 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
           </div>
           <div>
             <span>Điểm chạm đang dùng</span>
-            <strong>{template.touchpoints.length}</strong>
+            <strong>{touchpoints.length}</strong>
           </div>
           <div>
             <span>Bộ phận phụ trách</span>
@@ -43,8 +49,8 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
         <div className="modal__affected">
           <span>Điểm chạm bị ảnh hưởng</span>
           <div className="modal__tags">
-            {template.touchpoints.map((touchpoint) => (
-              <span className="pill" key={touchpoint.id}>
+            {touchpoints.map((touchpoint) => (
+              <span className="pill" key={`${touchpoint.routeId}-${touchpoint.displayOrder}`}>
                 {touchpoint.id}
               </span>
             ))}
@@ -54,8 +60,7 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
         <label className="confirmation-box">
           <input type="checkbox" defaultChecked />
           <span>
-            Tôi hiểu rằng template sẽ không còn khả dụng cho các điểm chạm active mới sau khi xác
-            nhận thao tác này.
+            Tôi hiểu rằng template sẽ không còn khả dụng cho các điểm chạm active mới sau khi xác nhận thao tác này.
           </span>
         </label>
 
@@ -63,7 +68,7 @@ export function DeactivateModal({ template, onClose }: DeactivateModalProps) {
           <button className="button button--ghost" type="button" onClick={onClose}>
             Hủy
           </button>
-          <button className="button button--danger" type="button" onClick={onClose}>
+          <button className="button button--danger" type="button" onClick={onConfirm}>
             Xác nhận ngừng sử dụng
           </button>
         </div>

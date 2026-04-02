@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import type { TemplateRecord } from '../types'
+import { getTouchpointsUsingTemplate } from '../data/touchpointData'
 import { StatusChip } from './StatusChip'
 
 interface TouchpointUsageDrawerProps {
@@ -8,6 +10,11 @@ interface TouchpointUsageDrawerProps {
 }
 
 export function TouchpointUsageDrawer({ template, onClose }: TouchpointUsageDrawerProps) {
+  const touchpoints = useMemo(
+    () => (template ? getTouchpointsUsingTemplate(template.id) : []),
+    [template],
+  )
+
   if (!template) return null
 
   return (
@@ -35,7 +42,7 @@ export function TouchpointUsageDrawer({ template, onClose }: TouchpointUsageDraw
           </div>
           <div className="usage-summary__item">
             <span>Tổng điểm chạm đang dùng</span>
-            <strong>{template.touchpoints.length}</strong>
+            <strong>{touchpoints.length}</strong>
           </div>
         </div>
 
@@ -53,12 +60,18 @@ export function TouchpointUsageDrawer({ template, onClose }: TouchpointUsageDraw
               </tr>
             </thead>
             <tbody>
-              {template.touchpoints.map((touchpoint) => (
-                <tr key={touchpoint.id}>
-                  <td className="code-cell">{touchpoint.id}</td>
+              {touchpoints.map((touchpoint) => (
+                <tr key={`${touchpoint.routeId}-${touchpoint.displayOrder}`}>
+                  <td className="code-cell">
+                    <Link className="touchpoint-link" to={`/touchpoints/${touchpoint.routeId}`}>
+                      {touchpoint.id}
+                    </Link>
+                  </td>
                   <td>
                     <div className="stacked">
-                      <strong>{touchpoint.name}</strong>
+                      <Link className="touchpoint-link" to={`/touchpoints/${touchpoint.routeId}`}>
+                        {touchpoint.name}
+                      </Link>
                       <span className="muted-text">{touchpoint.program}</span>
                     </div>
                   </td>
@@ -81,8 +94,7 @@ export function TouchpointUsageDrawer({ template, onClose }: TouchpointUsageDraw
         </div>
 
         <div className="drawer__info">
-          Mapping điểm chạm - template hiện chỉ dùng để xem trong phase này. Việc chỉnh sửa mapping
-          sẽ được thực hiện tại module Điểm chạm ở vòng tiếp theo.
+          Mapping điểm chạm - template hiện chỉ dùng để xem trong phase này. Việc chỉnh sửa mapping sẽ được thực hiện tại module Điểm chạm ở vòng tiếp theo.
         </div>
 
         <div className="drawer__footer drawer__footer--between">

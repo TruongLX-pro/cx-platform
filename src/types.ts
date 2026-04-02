@@ -23,6 +23,7 @@ export interface TemplateObject {
 }
 
 export interface TouchpointUsage {
+  routeId: string
   id: string
   name: string
   sourceSystem: string
@@ -75,7 +76,6 @@ export interface TemplateRecord {
   objectMode: ObjectMode
   status: TemplateStatus
   ownerTeam: string
-  version: string
   updatedAt: string
   updatedBy: string
   objects: TemplateObject[]
