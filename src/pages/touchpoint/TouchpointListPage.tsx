@@ -122,9 +122,8 @@ export function TouchpointListPage() {
             <tr>
               <th>Điểm chạm</th>
               <th>Loại</th>
-              <th>Nguồn</th>
+              <th>Nguồn / Màn hình</th>
               <th>Sản phẩm / Chương trình</th>
-              <th>Màn hình</th>
               <th>Template map</th>
               <th>Trạng thái</th>
               <th>Thao tác</th>
@@ -137,7 +136,7 @@ export function TouchpointListPage() {
               ))
             ) : (
               <tr>
-                <td className="muted-text" colSpan={8}>
+                <td className="muted-text" colSpan={7}>
                   Không tìm thấy điểm chạm phù hợp với bộ lọc hiện tại.
                 </td>
               </tr>
@@ -183,17 +182,16 @@ function TouchpointRow({ touchpoint }: { touchpoint: TouchpointRecord }) {
           <span className="muted-text">{touchpoint.respondentType}</span>
         </div>
       </td>
-      <td>{touchpoint.sourceSystem}</td>
       <td>
         <div className="stacked">
-          <span>{touchpoint.product}</span>
-          <span className="muted-text">{touchpoint.program}</span>
+          <span>{touchpoint.sourceSystem}</span>
+          <span className="code-cell">{touchpoint.screenCode}</span>
         </div>
       </td>
       <td>
         <div className="stacked">
-          <span className="code-cell">{touchpoint.screenCode}</span>
-          <span className="muted-text">{touchpoint.screenName}</span>
+          <span>{touchpoint.product}</span>
+          <span className="muted-text">{touchpoint.program}</span>
         </div>
       </td>
       <td>

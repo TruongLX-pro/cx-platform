@@ -1751,7 +1751,7 @@ p {
 
 .data-table--touchpoint-list {
   table-layout: fixed;
-  min-width: 1160px;
+  min-width: 1120px;
   width: 100%;
 }
 
@@ -1767,37 +1767,32 @@ p {
 
 .data-table--touchpoint-list th:nth-child(3),
 .data-table--touchpoint-list td:nth-child(3) {
-  width: 136px;
+  width: 180px;
 }
 
 .data-table--touchpoint-list th:nth-child(4),
 .data-table--touchpoint-list td:nth-child(4) {
-  width: 190px;
+  width: 220px;
 }
 
 .data-table--touchpoint-list th:nth-child(5),
 .data-table--touchpoint-list td:nth-child(5) {
-  width: 182px;
+  width: 120px;
 }
 
 .data-table--touchpoint-list th:nth-child(6),
 .data-table--touchpoint-list td:nth-child(6) {
-  width: 118px;
+  width: 110px;
 }
 
 .data-table--touchpoint-list th:nth-child(7),
 .data-table--touchpoint-list td:nth-child(7) {
-  width: 110px;
-}
-
-.data-table--touchpoint-list th:nth-child(8),
-.data-table--touchpoint-list td:nth-child(8) {
   width: 122px;
 }
 
 .data-table--touchpoint-list td:nth-child(1),
 .data-table--touchpoint-list td:nth-child(4),
-.data-table--touchpoint-list td:nth-child(5) {
+.data-table--touchpoint-list td:nth-child(3) {
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;

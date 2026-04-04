@@ -39,9 +39,9 @@ export interface TouchpointScreenOption {
 }
 
 export const productOptionsByType: Record<ProductType, string[]> = {
-  Tutor: ['Rino Edu'],
+  Tutor: ['Rino Edu', 'Ieltspeed'],
   Station: ['Rino Station'],
-  Digital: ['Rino Digi', 'Ieltspeed'],
+  Digital: ['Rino Digi'],
 }
 
 export const programOptionsByProduct: Record<string, string[]> = {
@@ -56,9 +56,9 @@ export const programOptionsByProduct: Record<string, string[]> = {
 }
 
 export const sourceSystemsByTouchpointType: Record<TouchpointType, string[]> = {
-  survey: ['CX Automation', 'CRM', 'Station Ops', 'Digital App'],
-  complaint: ['Care CRM', 'Station Ops'],
-  support: ['App/Web', 'Digital App'],
+  survey: ['Care', 'Zalo ZNS', 'ClassIn', 'App', 'Web', 'CRM', 'CX Automation / Bot'],
+  complaint: ['Care', 'App', 'Web', 'Ticket', 'CRM', 'Call center / Hotline'],
+  support: ['App', 'Web', 'CX Automation / Bot'],
 }
 
 export const touchpointRecords: TouchpointRecord[] = [
@@ -67,7 +67,7 @@ export const touchpointRecords: TouchpointRecord[] = [
     code: 'TP_TUTOR_MID_COURSE',
     name: 'Khảo sát giữa khóa Tutor',
     touchpointType: 'survey',
-    sourceSystem: 'CX Automation',
+    sourceSystem: 'Care',
     product: 'Rino Edu',
     productType: 'Tutor',
     program: 'Tiếng Anh Cambridge',
@@ -88,7 +88,7 @@ export const touchpointRecords: TouchpointRecord[] = [
     code: 'TP_STATION_POST_TRIAL',
     name: 'Khảo sát sau buổi học thử tại cơ sở',
     touchpointType: 'survey',
-    sourceSystem: 'Station Ops',
+    sourceSystem: 'Care',
     product: 'Rino Station',
     productType: 'Station',
     program: 'Tiếng Anh Station',
@@ -109,7 +109,7 @@ export const touchpointRecords: TouchpointRecord[] = [
     code: 'TP_DIGI_QUARTERLY',
     name: 'Khảo sát định kỳ Digital',
     touchpointType: 'survey',
-    sourceSystem: 'Digital App',
+    sourceSystem: 'App',
     product: 'Rino Digi',
     productType: 'Digital',
     program: 'Tiếng Anh Digital Teacher',
@@ -132,7 +132,7 @@ export const touchpointRecords: TouchpointRecord[] = [
     touchpointType: 'survey',
     sourceSystem: 'CRM',
     product: 'Ieltspeed',
-    productType: 'Digital',
+    productType: 'Tutor',
     program: 'Tiếng Anh IELTS',
     respondentType: 'Học sinh',
     surveyType: 'NPS',
@@ -151,7 +151,7 @@ export const touchpointRecords: TouchpointRecord[] = [
     code: 'TP_CARE_COMPLAINT_CASE',
     name: 'Tiếp nhận khiếu nại CSKH',
     touchpointType: 'complaint',
-    sourceSystem: 'Care CRM',
+    sourceSystem: 'Care',
     product: 'Rino Edu',
     productType: 'Tutor',
     program: 'Chương trình Toán tư duy Tutor',
@@ -172,7 +172,7 @@ export const touchpointRecords: TouchpointRecord[] = [
     code: 'TP_STUDENT_ISSUE_REPORT',
     name: 'Báo lỗi trong quá trình học',
     touchpointType: 'support',
-    sourceSystem: 'App/Web',
+    sourceSystem: 'App',
     product: 'Rino Digi',
     productType: 'Digital',
     program: 'Tiếng Anh Digital Teacher',
@@ -193,7 +193,7 @@ export const touchpointRecords: TouchpointRecord[] = [
     code: 'TP_STATION_COMPLAINT_CASE',
     name: 'Tiếp nhận khiếu nại tại cơ sở',
     touchpointType: 'complaint',
-    sourceSystem: 'Station Ops',
+    sourceSystem: 'Ticket',
     product: 'Rino Station',
     productType: 'Station',
     program: 'Toán tư duy Station',
@@ -224,7 +224,7 @@ export const touchpointStatusOptions: TouchpointStatus[] = ['Active', 'Inactive'
 export const productTypeOptions: ProductType[] = ['Tutor', 'Digital', 'Station']
 export const productOptions = Object.values(productOptionsByType).flat()
 export const programOptions = Object.values(programOptionsByProduct).flat()
-export const sourceSystemOptions = Object.values(sourceSystemsByTouchpointType).flat()
+export const sourceSystemOptions = Array.from(new Set(Object.values(sourceSystemsByTouchpointType).flat()))
 export const respondentOptions: RespondentType[] = ['Phụ huynh', 'Học sinh']
 export const surveyTypeOptions: TouchpointSurveyType[] = ['CSAT', 'NPS', 'CES', 'CUSTOM', 'Không áp dụng']
 export const touchpointScreenOptions: TouchpointScreenOption[] = [
@@ -323,22 +323,18 @@ export function getSourceSystemOptionsByType(touchpointType: TouchpointType) {
 
 export function getDefaultSourceSystem(touchpointType: TouchpointType, productType: ProductType) {
   if (touchpointType === 'complaint') {
-    return productType === 'Station' ? 'Station Ops' : 'Care CRM'
+    return productType === 'Tutor' ? 'Care' : 'Ticket'
   }
 
   if (touchpointType === 'support') {
-    return productType === 'Digital' ? 'App/Web' : 'Digital App'
-  }
-
-  if (productType === 'Station') {
-    return 'Station Ops'
+    return 'App'
   }
 
   if (productType === 'Digital') {
-    return 'Digital App'
+    return 'App'
   }
 
-  return 'CX Automation'
+  return 'Care'
 }
 
 export function buildTouchpointTemplateMappings(
