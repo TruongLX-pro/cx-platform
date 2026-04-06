@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { CustomSelect } from '../../components/CustomSelect'
+
+type RawDataType = 'survey' | 'complaint' | 'bug'
 
 type RawTableRow = {
   id: string
-  type: 'Khảo sát' | 'Khiếu nại' | 'Báo lỗi'
+  dataType: Exclude<RawDataType, ''>
   source: string
   touchpoint: string
-  scoreOrTopic: string
+  surveyType?: string
+  score?: string
+  topic?: string
+  issueContent?: string
   respondent: string
   relatedObject: string
   program: string
@@ -14,10 +19,11 @@ type RawTableRow = {
   negative: 'positive' | 'warning' | 'negative'
   status: string
   statusTone: 'default' | 'warning'
+  submittedAt: string
 }
 
 type RawFilters = {
-  dataType: string
+  dataType: RawDataType
   sourceSystem: string
   period: string
   product: string
@@ -25,6 +31,13 @@ type RawFilters = {
   touchpoint: string
   respondentQuery: string
   negativeOnly: boolean
+}
+
+type RawColumn = {
+  key: string
+  header: string
+  className?: string
+  render: (row: RawTableRow) => ReactNode
 }
 
 const sampleProducts = ['Rino Edu', 'Rino Station', 'Rino Digi', 'Ieltspeed']
@@ -50,7 +63,7 @@ const sampleTouchpoints = [
 ]
 
 const initialFilters: RawFilters = {
-  dataType: 'all',
+  dataType: 'survey',
   sourceSystem: 'all',
   period: '01/03/2026 - 31/03/2026',
   product: 'all',
@@ -63,10 +76,11 @@ const initialFilters: RawFilters = {
 const rawRows: RawTableRow[] = [
   {
     id: 'SR_20260324_0001',
-    type: 'Khảo sát',
+    dataType: 'survey',
     source: 'Care',
     touchpoint: 'Sau buổi học thử',
-    scoreOrTopic: '4.8',
+    surveyType: 'CSAT',
+    score: '4.8',
     respondent: 'Phụ huynh',
     relatedObject: 'Giáo viên: Trần Thị B',
     program: 'Tiếng Anh Cambridge',
@@ -74,13 +88,15 @@ const rawRows: RawTableRow[] = [
     negative: 'positive',
     status: 'Hoàn thành',
     statusTone: 'default',
+    submittedAt: '24/03/2026 10:00',
   },
   {
     id: 'SR_20260324_0002',
-    type: 'Khảo sát',
-    source: 'Zalo',
+    dataType: 'survey',
+    source: 'Zalo ZNS',
     touchpoint: 'Xác nhận lịch học',
-    scoreOrTopic: '4.1',
+    surveyType: 'NPS',
+    score: '4.1',
     respondent: 'Học sinh',
     relatedObject: 'Chương trình: Tiếng Anh IELTS',
     program: 'Tiếng Anh IELTS',
@@ -88,13 +104,15 @@ const rawRows: RawTableRow[] = [
     negative: 'warning',
     status: 'Hoàn thành',
     statusTone: 'default',
+    submittedAt: '24/03/2026 14:20',
   },
   {
     id: 'SR_20260324_0003',
-    type: 'Khảo sát',
+    dataType: 'survey',
     source: 'Care',
     touchpoint: 'Gia hạn khóa học',
-    scoreOrTopic: '4.9',
+    surveyType: 'CES',
+    score: '4.9',
     respondent: 'Phụ huynh',
     relatedObject: 'Chương trình: Tiếng Anh Kindie Tutor',
     program: 'Tiếng Anh Kindie Tutor',
@@ -102,13 +120,14 @@ const rawRows: RawTableRow[] = [
     negative: 'positive',
     status: 'Hoàn thành',
     statusTone: 'default',
+    submittedAt: '24/03/2026 16:45',
   },
   {
     id: 'CC_20260325_0001',
-    type: 'Khiếu nại',
+    dataType: 'complaint',
     source: 'Ticket',
     touchpoint: 'Khu vực sảnh chờ & Check-in',
-    scoreOrTopic: 'Thái độ tiếp đón',
+    topic: 'Thái độ tiếp đón',
     respondent: 'Phụ huynh',
     relatedObject: 'Cơ sở: Station Mỹ Đình',
     program: 'Tiếng Anh Station',
@@ -116,13 +135,14 @@ const rawRows: RawTableRow[] = [
     negative: 'negative',
     status: 'Đang xử lý',
     statusTone: 'warning',
+    submittedAt: '25/03/2026 11:00',
   },
   {
     id: 'CC_20260325_0002',
-    type: 'Khiếu nại',
-    source: 'Ticket',
+    dataType: 'complaint',
+    source: 'Call center / Hotline',
     touchpoint: 'Tư vấn đầu vào',
-    scoreOrTopic: 'Tư vấn chưa rõ ràng',
+    topic: 'Tư vấn chưa rõ ràng',
     respondent: 'Phụ huynh',
     relatedObject: 'Nhân viên: Hoàng Diệu L',
     program: 'Toán tư duy Station',
@@ -130,27 +150,14 @@ const rawRows: RawTableRow[] = [
     negative: 'warning',
     status: 'Đang xử lý',
     statusTone: 'warning',
-  },
-  {
-    id: 'SR_20260324_0004',
-    type: 'Khảo sát',
-    source: 'Care',
-    touchpoint: 'Hỗ trợ kỹ thuật',
-    scoreOrTopic: '4.6',
-    respondent: 'Giáo viên',
-    relatedObject: 'Lớp: Digital Teacher 01',
-    program: 'Tiếng Anh Digital Teacher',
-    product: 'Rino Digi',
-    negative: 'positive',
-    status: 'Hoàn thành',
-    statusTone: 'default',
+    submittedAt: '25/03/2026 15:30',
   },
   {
     id: 'BG_20260326_0001',
-    type: 'Báo lỗi',
-    source: 'Ticket',
+    dataType: 'bug',
+    source: 'App',
     touchpoint: 'Hỗ trợ kỹ thuật',
-    scoreOrTopic: 'Lỗi không vào được bài học',
+    issueContent: 'Lỗi không vào được bài học',
     respondent: 'Học sinh',
     relatedObject: 'Tài khoản: DT_1024',
     program: 'Tiếng Anh Digital Teacher',
@@ -158,20 +165,22 @@ const rawRows: RawTableRow[] = [
     negative: 'negative',
     status: 'Mở mới',
     statusTone: 'warning',
+    submittedAt: '26/03/2026 09:15',
   },
   {
-    id: 'CC_20260326_0002',
-    type: 'Khiếu nại',
-    source: 'Zalo',
-    touchpoint: 'Chăm sóc sau bán',
-    scoreOrTopic: 'Chậm phản hồi',
+    id: 'BG_20260326_0002',
+    dataType: 'bug',
+    source: 'Web',
+    touchpoint: 'Hỗ trợ kỹ thuật',
+    issueContent: 'Lỗi nộp bài không thành công',
     respondent: 'Phụ huynh',
-    relatedObject: 'CSKH: Hoàng Minh A',
-    program: 'Tiếng Anh Cambridge',
-    product: 'Rino Edu',
-    negative: 'negative',
-    status: 'Đang xử lý',
+    relatedObject: 'Tài khoản: WEB_7788',
+    program: 'Tiếng Anh IELTS',
+    product: 'Ieltspeed',
+    negative: 'warning',
+    status: 'Đang xác minh',
     statusTone: 'warning',
+    submittedAt: '26/03/2026 17:40',
   },
 ]
 
@@ -184,7 +193,7 @@ export function RawDataPage() {
   }
 
   const tableRows = rawRows.filter((row) => {
-    if (filters.dataType !== 'all' && row.type !== labelForType(filters.dataType)) return false
+    if (row.dataType !== filters.dataType) return false
     if (filters.sourceSystem !== 'all' && row.source.toLowerCase() !== filters.sourceSystem) return false
     if (filters.product !== 'all' && row.product !== filters.product) return false
     if (filters.program !== 'all' && row.program !== filters.program) return false
@@ -199,6 +208,9 @@ export function RawDataPage() {
 
     return true
   })
+
+  const columns = getColumnsByType(filters.dataType)
+  const emptyColSpan = 2 + columns.length
 
   return (
     <section className="raw-data-page raw-data-page--stitch">
@@ -229,9 +241,8 @@ export function RawDataPage() {
             label="Loại dữ liệu"
             type="select"
             value={filters.dataType}
-            onChange={(value) => updateFilter('dataType', value)}
+            onChange={(value) => updateFilter('dataType', value as RawDataType)}
             options={[
-              { value: 'all', label: 'Tất cả' },
               { value: 'survey', label: 'Khảo sát' },
               { value: 'complaint', label: 'Khiếu nại' },
               { value: 'bug', label: 'Báo lỗi' },
@@ -245,8 +256,11 @@ export function RawDataPage() {
             options={[
               { value: 'all', label: 'Tất cả' },
               { value: 'care', label: 'Care' },
-              { value: 'zalo', label: 'Zalo' },
+              { value: 'zalo zns', label: 'Zalo ZNS' },
               { value: 'ticket', label: 'Ticket' },
+              { value: 'call center / hotline', label: 'Call center / Hotline' },
+              { value: 'app', label: 'App' },
+              { value: 'web', label: 'Web' },
             ]}
           />
           <FilterControl
@@ -324,51 +338,33 @@ export function RawDataPage() {
                   <input type="checkbox" aria-label="Chọn tất cả bản ghi" />
                 </th>
                 <th className="raw-record-col raw-sticky-col raw-sticky-col--record">Record ID</th>
-                <th>Loại</th>
-                <th>Nguồn</th>
-                <th>Điểm chạm</th>
-                <th>Điểm / Chủ đề</th>
-                <th>Người phản hồi</th>
-                <th>Đối tượng liên quan</th>
-                <th>Chương trình</th>
-                <th>Sản phẩm</th>
-                <th className="u-center">Negative</th>
-                <th>Trạng thái</th>
+                {columns.map((column) => (
+                  <th key={column.key}>{column.header}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {tableRows.map((row) => (
-                <tr key={row.id} className={row.type !== 'Khảo sát' ? 'raw-row--alert' : ''}>
-                  <td className="raw-check-col raw-sticky-col raw-sticky-col--check">
-                    <input type="checkbox" aria-label={`Chọn bản ghi ${row.id}`} />
-                  </td>
-                  <td className="code-cell raw-record-col raw-sticky-col raw-sticky-col--record">{row.id}</td>
-                  <td>
-                    <span
-                      className={`survey-pill${
-                        row.type === 'Khiếu nại' || row.type === 'Báo lỗi' ? ' survey-pill--danger' : ''
-                      }`}
-                    >
-                      {row.type}
-                    </span>
-                  </td>
-                  <td>{row.source}</td>
-                  <td>{row.touchpoint}</td>
-                  <td className={row.type === 'Khảo sát' ? 'raw-score-cell' : 'raw-topic-cell'}>{row.scoreOrTopic}</td>
-                  <td className="raw-respondent">{row.respondent}</td>
-                  <td>{row.relatedObject}</td>
-                  <td>{row.program}</td>
-                  <td>{row.product}</td>
-                  <td className="u-center">
-                    <span className={`material-symbols-outlined raw-negative raw-negative--${row.negative}`}>
-                      {row.negative === 'negative' ? 'error' : row.negative === 'warning' ? 'warning' : 'check_circle'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`raw-status-pill raw-status-pill--${row.statusTone}`}>{row.status}</span>
+              {tableRows.length === 0 ? (
+                <tr>
+                  <td className="muted-text" colSpan={emptyColSpan}>
+                    Không tìm thấy bản ghi phù hợp với bộ lọc hiện tại.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                tableRows.map((row) => (
+                  <tr key={row.id} className={row.negative === 'negative' ? 'raw-row--alert' : ''}>
+                    <td className="raw-check-col raw-sticky-col raw-sticky-col--check">
+                      <input type="checkbox" aria-label={`Chọn bản ghi ${row.id}`} />
+                    </td>
+                    <td className="code-cell raw-record-col raw-sticky-col raw-sticky-col--record">{row.id}</td>
+                    {columns.map((column) => (
+                      <td key={column.key} className={column.className}>
+                        {column.render(row)}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -419,11 +415,60 @@ export function RawDataPage() {
   )
 }
 
-function labelForType(type: string) {
-  if (type === 'survey') return 'Khảo sát'
-  if (type === 'complaint') return 'Khiếu nại'
-  if (type === 'bug') return 'Báo lỗi'
-  return type
+function getColumnsByType(dataType: RawDataType): RawColumn[] {
+  if (dataType === 'survey') {
+    return [
+      { key: 'source', header: 'Nguồn', render: (row) => row.source },
+      { key: 'touchpoint', header: 'Điểm chạm', render: (row) => row.touchpoint },
+      { key: 'surveyType', header: 'Loại khảo sát', render: (row) => row.surveyType ?? '-' },
+      { key: 'score', header: 'Điểm', className: 'raw-score-cell', render: (row) => row.score ?? '-' },
+      { key: 'respondent', header: 'Người phản hồi', className: 'raw-respondent', render: (row) => row.respondent },
+      { key: 'relatedObject', header: 'Đối tượng đánh giá', render: (row) => row.relatedObject },
+      { key: 'program', header: 'Chương trình', render: (row) => row.program },
+      { key: 'product', header: 'Sản phẩm', render: (row) => row.product },
+      { key: 'negative', header: 'Negative', className: 'u-center', render: (row) => renderNegativeFlag(row.negative) },
+      { key: 'submittedAt', header: 'Thời gian phản hồi', render: (row) => row.submittedAt },
+    ]
+  }
+
+  if (dataType === 'complaint') {
+    return [
+      { key: 'source', header: 'Nguồn', render: (row) => row.source },
+      { key: 'touchpoint', header: 'Điểm chạm', render: (row) => row.touchpoint },
+      { key: 'topic', header: 'Chủ đề khiếu nại', className: 'raw-topic-cell', render: (row) => row.topic ?? '-' },
+      { key: 'respondent', header: 'Người phản ánh', className: 'raw-respondent', render: (row) => row.respondent },
+      { key: 'relatedObject', header: 'Đối tượng liên quan', render: (row) => row.relatedObject },
+      { key: 'program', header: 'Chương trình', render: (row) => row.program },
+      { key: 'product', header: 'Sản phẩm', render: (row) => row.product },
+      { key: 'negative', header: 'Negative', className: 'u-center', render: (row) => renderNegativeFlag(row.negative) },
+      { key: 'status', header: 'Trạng thái xử lý', render: (row) => renderStatus(row.status, row.statusTone) },
+      { key: 'submittedAt', header: 'Thời gian ghi nhận', render: (row) => row.submittedAt },
+    ]
+  }
+
+  return [
+    { key: 'source', header: 'Nguồn', render: (row) => row.source },
+    { key: 'touchpoint', header: 'Điểm chạm', render: (row) => row.touchpoint },
+    { key: 'issueContent', header: 'Nội dung báo lỗi', className: 'raw-topic-cell', render: (row) => row.issueContent ?? '-' },
+    { key: 'respondent', header: 'Người báo lỗi', className: 'raw-respondent', render: (row) => row.respondent },
+    { key: 'relatedObject', header: 'Tài khoản / đối tượng liên quan', render: (row) => row.relatedObject },
+    { key: 'program', header: 'Chương trình', render: (row) => row.program },
+    { key: 'product', header: 'Sản phẩm', render: (row) => row.product },
+    { key: 'status', header: 'Trạng thái xử lý', render: (row) => renderStatus(row.status, row.statusTone) },
+    { key: 'submittedAt', header: 'Thời gian ghi nhận', render: (row) => row.submittedAt },
+  ]
+}
+
+function renderNegativeFlag(tone: RawTableRow['negative']) {
+  return (
+    <span className={`material-symbols-outlined raw-negative raw-negative--${tone}`}>
+      {tone === 'negative' ? 'error' : tone === 'warning' ? 'warning' : 'check_circle'}
+    </span>
+  )
+}
+
+function renderStatus(status: string, tone: RawTableRow['statusTone']) {
+  return <span className={`raw-status-pill raw-status-pill--${tone}`}>{status}</span>
 }
 
 function FilterControl({
@@ -434,6 +479,7 @@ function FilterControl({
   options = [],
   placeholder,
   icon,
+  error,
 }: {
   label: string
   value: string
@@ -442,6 +488,7 @@ function FilterControl({
   options?: Array<{ value: string; label: string }>
   placeholder?: string
   icon?: string
+  error?: string
 }) {
   return (
     <label className="field field--compact">
@@ -463,6 +510,7 @@ function FilterControl({
           ) : null}
         </div>
       )}
+      {error ? <small className="field-error">{error}</small> : null}
     </label>
   )
 }
