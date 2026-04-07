@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CustomSelect } from '../../components/CustomSelect'
 import { TemplateObjectDrawer } from '../../components/TemplateObjectDrawer'
 import {
+  objectModeOptions,
   ownerTeamOptions,
   respondentOptions,
   surveyTypeOptions,
@@ -19,7 +20,7 @@ import type {
 } from '../../types'
 
 interface TemplateBuilderPageProps {
-  mode: 'multi' | 'single' | 'edit'
+  mode: 'create' | 'edit'
 }
 
 interface BuilderFormState {
@@ -38,6 +39,11 @@ interface EditingObjectState {
   object: TemplateObject
 }
 
+interface ObjectModeConfirmState {
+  nextObjectMode: ObjectMode
+  retainedObject: TemplateObject
+}
+
 export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
   const navigate = useNavigate()
   const previewRef = useRef<HTMLElement | null>(null)
@@ -46,38 +52,6 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
   const template = useMemo<TemplateRecord>(() => {
     if (mode === 'edit' && templateId) {
       return templateRecords.find((record) => record.id === templateId) ?? templateRecords[0]
-    }
-
-    if (mode === 'single') {
-      return {
-        id: 'draft-single-object',
-        code: '',
-        name: '',
-        surveyType: 'NPS',
-        goal: '',
-        respondentType: 'Học sinh',
-        objectMode: 'single',
-        status: 'Nháp',
-        ownerTeam: 'Khối học thuật',
-        updatedAt: formatToday(),
-        updatedBy: 'Codex',
-        objects: [
-          {
-            id: 'draft-object-single',
-            type: 'Chương trình học',
-            name: 'Chương trình học',
-            refCode: 'PRG',
-            displayOrder: 1,
-            question: 'Bạn có sẵn sàng giới thiệu chương trình này cho bạn bè không?',
-            questionType: 'NPS 0-10',
-            required: true,
-            allowComment: true,
-            minScore: 0,
-            maxScore: 10,
-          },
-        ],
-        touchpoints: [],
-      }
     }
 
     return {
@@ -103,7 +77,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
     surveyType: template.surveyType,
     goal: template.goal,
     respondentType: template.respondentType,
-    objectMode: mode === 'single' ? 'single' : template.objectMode,
+    objectMode: template.objectMode,
     ownerTeam: template.ownerTeam,
     status: template.status,
   })
@@ -113,6 +87,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
     })),
   )
   const [editingObject, setEditingObject] = useState<EditingObjectState | null>(null)
+  const [objectModeConfirm, setObjectModeConfirm] = useState<ObjectModeConfirmState | null>(null)
 
   useEffect(() => {
     setForm({
@@ -121,7 +96,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
       surveyType: template.surveyType,
       goal: template.goal,
       respondentType: template.respondentType,
-      objectMode: mode === 'single' ? 'single' : template.objectMode,
+      objectMode: template.objectMode,
       ownerTeam: template.ownerTeam,
       status: template.status,
     })
@@ -131,7 +106,8 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
       })),
     )
     setEditingObject(null)
-  }, [mode, template])
+    setObjectModeConfirm(null)
+  }, [template])
 
   const isSingle = form.objectMode === 'single'
   const visibleObjects = objects.slice(0, isSingle ? 1 : objects.length)
@@ -151,17 +127,13 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
           surveyType: template.surveyType,
           goal: template.goal,
           respondentType: template.respondentType,
-          objectMode: mode === 'single' ? 'single' : template.objectMode,
+          objectMode: template.objectMode,
           ownerTeam: template.ownerTeam,
           status: template.status,
         },
-        objects: normalizeObjects(
-          template.objects
-            .map((item) => ({ ...item }))
-            .slice(0, mode === 'single' ? 1 : template.objects.length),
-        ),
+        objects: normalizeObjects(template.objects.map((item) => ({ ...item }))),
       }),
-    [mode, template],
+    [template],
   )
 
   const currentSnapshot = useMemo(
@@ -267,7 +239,14 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
                 </label>
                 <label className="field">
                   <span>Chế độ object</span>
-                  <input value={isSingle ? 'Single-object' : 'Multi-object'} readOnly />
+                  <CustomSelect
+                    value={form.objectMode}
+                    onChange={handleObjectModeChange}
+                    options={objectModeOptions.map((item) => ({
+                      value: item,
+                      label: item === 'single' ? 'Single-object' : 'Multi-object',
+                    }))}
+                  />
                   <small>
                     {isSingle
                       ? 'Template single-object chỉ chứa một đối tượng khảo sát.'
@@ -436,6 +415,19 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
         }}
         templateName={form.name || 'Template đang soạn'}
       />
+      <ObjectModeConfirmModal
+        state={objectModeConfirm}
+        onClose={() => setObjectModeConfirm(null)}
+        onConfirm={() => {
+          if (!objectModeConfirm) return
+
+          setForm((current) => ({
+            ...current,
+            objectMode: objectModeConfirm.nextObjectMode,
+          }))
+          setObjectModeConfirm(null)
+        }}
+      />
     </section>
   )
 
@@ -484,7 +476,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
       surveyType: form.surveyType,
       goal: form.goal.trim(),
       respondentType: form.respondentType,
-      objectMode: isSingle ? 'single' : form.objectMode,
+      objectMode: form.objectMode,
       status: nextStatus,
       ownerTeam: form.ownerTeam,
       updatedAt: formatToday(),
@@ -503,6 +495,82 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
   function removeObject(objectId: string) {
     setObjects((current) => normalizeObjects(current.filter((item) => item.id !== objectId)))
   }
+
+  function handleObjectModeChange(nextObjectMode: ObjectMode) {
+    if (nextObjectMode === form.objectMode) {
+      return
+    }
+
+    if (nextObjectMode === 'single' && objects.length > 1) {
+      const retainedObject = normalizeObjects(objects)[0]
+      setObjectModeConfirm({
+        nextObjectMode,
+        retainedObject,
+      })
+      return
+    }
+
+    setForm((current) => ({
+      ...current,
+      objectMode: nextObjectMode,
+    }))
+  }
+}
+
+function ObjectModeConfirmModal({
+  state,
+  onClose,
+  onConfirm,
+}: {
+  state: ObjectModeConfirmState | null
+  onClose: () => void
+  onConfirm: () => void
+}) {
+  if (!state) return null
+
+  return (
+    <>
+      <div className="overlay overlay--modal" onClick={onClose} />
+      <div className="modal">
+        <div className="modal__header">
+          <div className="modal__icon">!</div>
+          <h2>Chuyển sang single-object?</h2>
+        </div>
+        <p className="modal__lead">
+          Khi lưu template ở chế độ <strong>single-object</strong>, hệ thống sẽ chỉ giữ lại{' '}
+          <strong>1 object đầu tiên</strong>. Các object còn lại sẽ không được lưu trong bản template mới.
+        </p>
+
+        <div className="modal__summary">
+          <div>
+            <span>Object được giữ lại</span>
+            <strong>{state.retainedObject.type}</strong>
+          </div>
+          <div>
+            <span>Mã tham chiếu</span>
+            <strong>{state.retainedObject.refCode}</strong>
+          </div>
+        </div>
+
+        <div className="modal__affected">
+          <span>Lưu ý</span>
+          <div className="modal__tags">
+            <span className="pill">Chỉ áp dụng khi bấm Lưu nháp hoặc Kích hoạt</span>
+            <span className="pill">Nếu đổi lại multi-object trước khi lưu, danh sách object hiện tại vẫn được giữ</span>
+          </div>
+        </div>
+
+        <div className="modal__actions">
+          <button className="button button--ghost" type="button" onClick={onClose}>
+            Hủy
+          </button>
+          <button className="button button--danger" type="button" onClick={onConfirm}>
+            Xác nhận chuyển chế độ
+          </button>
+        </div>
+      </div>
+    </>
+  )
 }
 
 function renderQuestionPreview(object: TemplateObject) {

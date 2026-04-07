@@ -21,8 +21,10 @@ export function DeactivateModal({ template, onClose, onConfirm }: DeactivateModa
     <>
       <div className="overlay overlay--modal" onClick={onClose} />
       <div className="modal">
-        <div className="modal__icon">!</div>
-        <h2>Ngừng sử dụng template?</h2>
+        <div className="modal__header">
+          <div className="modal__icon">!</div>
+          <h2>Ngừng sử dụng template?</h2>
+        </div>
         <p className="modal__lead">
           Template <strong>"{template.name}"</strong> hiện đang được sử dụng tại <strong>{touchpoints.length} điểm chạm</strong>. Sau khi ngừng sử dụng, template sẽ không còn được áp dụng cho các cấu hình active mới.
         </p>

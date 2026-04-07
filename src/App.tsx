@@ -25,8 +25,7 @@ function App() {
         <Route path="/reports" element={<DashboardPlaceholderPage sectionTitle="Báo cáo" />} />
         <Route path="/cx-data" element={<RawDataPage />} />
         <Route path="/templates" element={<TemplateListPage />} />
-        <Route path="/templates/new" element={<TemplateBuilderPage mode="multi" />} />
-        <Route path="/templates/new-single" element={<TemplateBuilderPage mode="single" />} />
+        <Route path="/templates/new" element={<TemplateBuilderPage mode="create" />} />
         <Route path="/templates/:templateId" element={<TemplateDetailPage />} />
         <Route path="/templates/:templateId/edit" element={<TemplateBuilderPage mode="edit" />} />
       </Route>

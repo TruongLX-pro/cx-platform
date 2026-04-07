@@ -2494,6 +2494,17 @@ p {
   letter-spacing: -0.02em;
 }
 
+.modal__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modal__header h2 {
+  margin: 0;
+}
+
 .modal__icon {
   display: grid;
   place-items: center;
@@ -2504,11 +2515,12 @@ p {
   color: #9a6504;
   font-size: 24px;
   font-weight: 800;
-  margin-bottom: 16px;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .modal__lead {
-  margin-top: 10px;
+  margin-top: 0;
   line-height: 1.6;
 }
 
