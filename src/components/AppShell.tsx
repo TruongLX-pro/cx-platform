@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 const navItems = [
@@ -12,8 +12,26 @@ const navItems = [
 const mascotUrl = '/brand/rinoedu-logo.png'
 const wordmarkUrl = '/brand/rinoedu-name.png'
 
-export function AppShell() {
+interface AppShellProps {
+  currentUser: {
+    name: string
+    role: string
+  }
+  onLogout: () => void
+}
+
+export function AppShell({ currentUser, onLogout }: AppShellProps) {
   const [collapsed, setCollapsed] = useState(false)
+  const avatarLabel = useMemo(
+    () =>
+      currentUser.name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((item) => item[0]?.toUpperCase() ?? '')
+        .join(''),
+    [currentUser.name],
+  )
 
   return (
     <div className={`app-shell${collapsed ? ' app-shell--collapsed' : ''}`}>
@@ -60,12 +78,12 @@ export function AppShell() {
         </div>
 
         <div className="sidebar__user">
-          <div className="avatar">HA</div>
+          <div className="avatar">{avatarLabel || 'CX'}</div>
           <div className="sidebar__user-copy">
-            <div className="user__name">Hoàng Minh Anh</div>
-            <div className="user__meta">Quản trị viên hệ thống</div>
+            <div className="user__name">{currentUser.name}</div>
+            <div className="user__meta">{currentUser.role}</div>
           </div>
-          <button className="sidebar__user-action" type="button" aria-label="Đăng xuất">
+          <button className="sidebar__user-action" type="button" aria-label="Đăng xuất" onClick={onLogout}>
             <span className="material-symbols-outlined" aria-hidden="true">
               logout
             </span>
