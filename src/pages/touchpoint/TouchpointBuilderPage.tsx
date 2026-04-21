@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CustomSelect } from '../../components/CustomSelect'
 import { StatusChip } from '../../components/StatusChip'
-import { ownerTeamOptions, templateRecords } from '../../data/templateData'
+import { templateRecords } from '../../data/templateData'
 import {
   buildTouchpointTemplateMappings,
   getCompatibleTemplatesForTouchpoint,
@@ -16,6 +16,7 @@ import {
   getScreenName,
   getScreenOptionsByType,
   getSourceSystemOptionsByType,
+  touchpointOwnerTeamOptions,
   respondentOptions,
   surveyTypeOptions,
   touchpointRecords,
@@ -57,7 +58,6 @@ interface TouchpointFormState {
 
 export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
   const navigate = useNavigate()
-  const previewRef = useRef<HTMLElement | null>(null)
   const { touchpointId } = useParams()
 
   const initialTouchpoint = useMemo<TouchpointRecord>(() => {
@@ -89,7 +89,6 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
     () => surveyTypeOptions.filter((item) => item !== 'Không áp dụng'),
     [],
   )
-  const availableProducts = useMemo(() => getProductOptionsByType(form.productType), [form.productType])
   const availablePrograms = useMemo(() => getProgramOptionsByProduct(form.product), [form.product])
   const availableSourceSystems = useMemo(
     () => getSourceSystemOptionsByType(form.touchpointType),
@@ -163,14 +162,8 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
           <button className="button button--ghost" type="button" onClick={handleCancel}>
             Hủy
           </button>
-          <button className="button button--ghost" type="button" onClick={handleSaveDraft}>
-            Lưu nháp
-          </button>
-          <button className="button button--ghost" type="button" onClick={handlePreview}>
-            Xem trước
-          </button>
-          <button className="button button--primary" type="button" onClick={handleActivate}>
-            Kích hoạt
+          <button className="button button--primary" type="button" onClick={handleSave}>
+            Lưu
           </button>
         </div>
       </div>
@@ -237,14 +230,7 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
                     options={productTypeOptions.map((item) => ({ value: item, label: item }))}
                   />
                 </label>
-                <label className="field">
-                  <span>Sản phẩm</span>
-                  <CustomSelect
-                    value={form.product}
-                    onChange={handleProductChange}
-                    options={availableProducts.map((item) => ({ value: item, label: item }))}
-                  />
-                </label>
+                <div />
               </div>
 
               <div className="template-builder-meta-row">
@@ -317,7 +303,7 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
                   <CustomSelect
                     value={form.ownerTeam}
                     onChange={(ownerTeam) => setForm((current) => ({ ...current, ownerTeam }))}
-                    options={ownerTeamOptions.map((item) => ({ value: item, label: item }))}
+                    options={touchpointOwnerTeamOptions.map((item) => ({ value: item, label: item }))}
                   />
                 </label>
                 <label className="field">
@@ -369,7 +355,7 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
                       <div className="touchpoint-map-row__content">
                         <div className="touchpoint-map-row__title">
                           <strong>{template.name}</strong>
-                          <Link className="touchpoint-link" to={`/templates/${template.id}`}>
+                          <Link className="touchpoint-link" to={`/templates/${template.id}/edit`}>
                             {template.code}
                           </Link>
                         </div>
@@ -403,7 +389,7 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
           </div>
         </div>
 
-        <aside className="builder-preview touchpoint-builder-preview" ref={previewRef}>
+        <aside className="builder-preview touchpoint-builder-preview">
           <div className="builder-preview__head">
             <h3>Xem trước cấu trúc</h3>
             <p>{form.name || 'Touchpoint đang soạn'} hiển thị như thế nào trong hệ thống.</p>
@@ -435,10 +421,6 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
             </div>
             <p>{form.triggerEvent || 'Mô tả trigger event của touchpoint ở đây.'}</p>
             <div className="touchpoint-preview-stack">
-              <div className="touchpoint-preview-item">
-                <span>Product</span>
-                <strong>{form.product}</strong>
-              </div>
               <div className="touchpoint-preview-item">
                 <span>Program</span>
                 <strong>{form.program}</strong>
@@ -498,27 +480,18 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
     navigate('/touchpoints')
   }
 
-  function handleSaveDraft() {
-    const savedRecord = persistTouchpoint('Inactive')
-    navigate(`/touchpoints/${savedRecord.id}`)
-  }
-
-  function handlePreview() {
-    previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  function handleActivate() {
+  function handleSave() {
     if (!form.code.trim() || !form.name.trim() || !form.triggerEvent.trim()) {
-      window.alert('Cần nhập đầy đủ mã điểm chạm, tên điểm chạm và trigger event trước khi kích hoạt.')
+      window.alert('Cần nhập đầy đủ mã điểm chạm, tên điểm chạm và trigger event trước khi lưu.')
       return
     }
 
-    if (canMapTemplates && selectedTemplateIds.length === 0) {
-      window.alert('Touchpoint loại khảo sát cần ít nhất một template mapping trước khi kích hoạt.')
+    if (form.status === 'Active' && canMapTemplates && selectedTemplateIds.length === 0) {
+      window.alert('Touchpoint loại khảo sát cần ít nhất một template mapping trước khi lưu ở trạng thái hoạt động.')
       return
     }
 
-    const savedRecord = persistTouchpoint('Active')
+    const savedRecord = persistTouchpoint(form.status)
     navigate(`/touchpoints/${savedRecord.id}`)
   }
 
@@ -609,20 +582,6 @@ export function TouchpointBuilderPage({ mode }: TouchpointBuilderPageProps) {
         sourceSystem: getDefaultSourceSystem(current.touchpointType, nextProductType),
         screenCode: nextScreenCode,
         screenName: getScreenName(nextScreenCode),
-      }
-    })
-  }
-
-  function handleProductChange(nextProduct: string) {
-    setForm((current) => {
-      const nextProgram = getProgramOptionsByProduct(nextProduct).includes(current.program)
-        ? current.program
-        : getDefaultProgramForProduct(nextProduct)
-
-      return {
-        ...current,
-        product: nextProduct,
-        program: nextProgram,
       }
     })
   }
@@ -727,7 +686,7 @@ function createDraftTouchpoint(): TouchpointRecord {
     screenCode,
     screenName: getScreenName(screenCode),
     status: 'Active',
-    ownerTeam: 'Chăm sóc khách hàng',
+    ownerTeam: 'Vận hành (Online)',
     recordType: 'survey_feedback',
     updatedAt: formatToday(),
     updatedBy: 'Codex',
@@ -775,3 +734,4 @@ function slugify(value: string) {
 function formatToday() {
   return new Intl.DateTimeFormat('en-GB').format(new Date())
 }
+

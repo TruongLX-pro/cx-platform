@@ -9,7 +9,6 @@ import { TouchpointBuilderPage } from './pages/touchpoint/TouchpointBuilderPage'
 import { TouchpointDetailPage } from './pages/touchpoint/TouchpointDetailPage'
 import { TouchpointListPage } from './pages/touchpoint/TouchpointListPage'
 import { TemplateBuilderPage } from './pages/template/TemplateBuilderPage'
-import { TemplateDetailPage } from './pages/template/TemplateDetailPage'
 import { TemplateListPage } from './pages/template/TemplateListPage'
 
 const SESSION_KEY = 'cx-platform-session'
@@ -84,7 +83,6 @@ function App() {
         <Route path="/cx-data" element={<RawDataPage />} />
         <Route path="/templates" element={<TemplateListPage />} />
         <Route path="/templates/new" element={<TemplateBuilderPage mode="create" />} />
-        <Route path="/templates/:templateId" element={<TemplateDetailPage />} />
         <Route path="/templates/:templateId/edit" element={<TemplateBuilderPage mode="edit" />} />
       </Route>
     </Routes>
@@ -92,3 +90,4 @@ function App() {
 }
 
 export default App
+

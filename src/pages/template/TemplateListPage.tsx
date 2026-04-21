@@ -178,15 +178,9 @@ export function TemplateListPage() {
                   </td>
                   <td>
                     <div className="row-actions-icons row-actions-icons--template">
-                      <Link className="icon-link" to={`/templates/${template.id}`} aria-label="Xem">
-                        <span className="material-symbols-outlined">visibility</span>
-                      </Link>
                       <Link className="icon-link" to={`/templates/${template.id}/edit`} aria-label="Chỉnh sửa">
                         <span className="material-symbols-outlined">edit</span>
                       </Link>
-                      <button className="icon-link" type="button" aria-label="Nhân bản">
-                        <span className="material-symbols-outlined">content_copy</span>
-                      </button>
                       {template.status === 'Đang hoạt động' ? (
                         <button
                           className="icon-link icon-link--danger"
@@ -308,3 +302,4 @@ function FilterSelect<T extends string>({
     </label>
   )
 }
+

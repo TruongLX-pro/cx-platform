@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CustomSelect } from '../../components/CustomSelect'
 import { TemplateObjectDrawer } from '../../components/TemplateObjectDrawer'
@@ -46,7 +46,6 @@ interface ObjectModeConfirmState {
 
 export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
   const navigate = useNavigate()
-  const previewRef = useRef<HTMLElement | null>(null)
   const { templateId } = useParams()
 
   const template = useMemo<TemplateRecord>(() => {
@@ -110,6 +109,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
   }, [template])
 
   const isSingle = form.objectMode === 'single'
+  const isDraftTemplate = form.status === 'Nháp'
   const visibleObjects = objects.slice(0, isSingle ? 1 : objects.length)
   const builderTitle = mode === 'edit' ? 'Chỉnh sửa template' : 'Tạo template khảo sát'
 
@@ -161,15 +161,20 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
           <button className="button button--ghost" type="button" onClick={handleCancel}>
             Hủy
           </button>
-          <button className="button button--ghost" type="button" onClick={handleSaveDraft}>
-            Lưu nháp
-          </button>
-          <button className="button button--ghost" type="button" onClick={handlePreview}>
-            Xem trước
-          </button>
-          <button className="button button--primary" type="button" onClick={handleActivate}>
-            Kích hoạt
-          </button>
+          {isDraftTemplate ? (
+            <>
+              <button className="button button--ghost" type="button" onClick={handleSaveDraft}>
+                Lưu nháp
+              </button>
+              <button className="button button--primary" type="button" onClick={handleActivate}>
+                Kích hoạt
+              </button>
+            </>
+          ) : (
+            <button className="button button--primary" type="button" onClick={handleSave}>
+              Lưu
+            </button>
+          )}
         </div>
       </div>
 
@@ -301,7 +306,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
 
             {!hasObjects ? (
               <div className="inline-note inline-note--soft">
-                Template hiện chưa có object nào. Hãy thêm ít nhất một object để có thể kích hoạt template.
+                Template hiện chưa có object nào. Hãy thêm ít nhất một object để hoàn thiện cấu trúc khảo sát.
               </div>
             ) : null}
 
@@ -358,7 +363,7 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
           </div>
         </div>
 
-        <aside className="builder-preview" ref={previewRef}>
+        <aside className="builder-preview">
           <div className="builder-preview__head">
             <h3>Xem trước cấu trúc</h3>
             <p>{form.name || 'Template đang soạn'} hiển thị như thế nào với người phản hồi.</p>
@@ -436,21 +441,13 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
       return
     }
 
-    if (mode === 'edit') {
-      navigate(`/templates/${template.id}`)
-      return
-    }
-
     navigate('/templates')
   }
 
-  function handlePreview() {
-    previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
 
   function handleSaveDraft() {
     const savedRecord = persistTemplate('Nháp')
-    navigate(`/templates/${savedRecord.id}`)
+    navigate(`/templates/${savedRecord.id}/edit`)
   }
 
   function handleActivate() {
@@ -464,8 +461,13 @@ export function TemplateBuilderPage({ mode }: TemplateBuilderPageProps) {
       return
     }
 
-    const savedRecord = persistTemplate('Đang hoạt động')
-    navigate(`/templates/${savedRecord.id}`)
+    persistTemplate('Đang hoạt động')
+    navigate('/templates')
+  }
+
+  function handleSave() {
+    persistTemplate(form.status)
+    navigate('/templates')
   }
 
   function persistTemplate(nextStatus: TemplateStatus) {
@@ -555,7 +557,7 @@ function ObjectModeConfirmModal({
         <div className="modal__affected">
           <span>Lưu ý</span>
           <div className="modal__tags">
-            <span className="pill">Chỉ áp dụng khi bấm Lưu nháp hoặc Kích hoạt</span>
+            <span className="pill">Chỉ áp dụng khi bấm Lưu nháp, Kích hoạt hoặc Lưu</span>
             <span className="pill">Nếu đổi lại multi-object trước khi lưu, danh sách object hiện tại vẫn được giữ</span>
           </div>
         </div>
@@ -635,3 +637,6 @@ function slugify(value: string) {
 function formatToday() {
   return new Intl.DateTimeFormat('en-GB').format(new Date())
 }
+
+
+

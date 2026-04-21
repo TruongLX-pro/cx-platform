@@ -98,8 +98,8 @@ export function TouchpointUsageDrawer({ template, onClose }: TouchpointUsageDraw
         </div>
 
         <div className="drawer__footer drawer__footer--between">
-          <Link className="drawer__link" to={`/templates/${template.id}`}>
-            Xem chi tiết template
+          <Link className="drawer__link" to={`/templates/${template.id}/edit`}>
+            Chỉnh sửa template
           </Link>
           <button className="button button--ghost" type="button" onClick={onClose}>
             Đóng
@@ -109,3 +109,4 @@ export function TouchpointUsageDrawer({ template, onClose }: TouchpointUsageDraw
     </>
   )
 }
+

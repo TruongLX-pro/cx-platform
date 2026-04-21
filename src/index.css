@@ -668,7 +668,7 @@ p {
 
 .data-table--template-list {
   width: 100%;
-  min-width: 1360px;
+  min-width: 1240px;
   table-layout: fixed;
 }
 
@@ -706,7 +706,7 @@ p {
 
 .data-table--template-list th:nth-child(9),
 .data-table--template-list td:nth-child(9) {
-  width: 176px;
+  width: 118px;
   padding-left: 12px;
   padding-right: 12px;
   white-space: nowrap;
@@ -1742,7 +1742,7 @@ p {
 }
 
 .touchpoint-filter-grid {
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
 .touchpoint-table-card {
@@ -1772,7 +1772,7 @@ p {
 
 .data-table--touchpoint-list th:nth-child(4),
 .data-table--touchpoint-list td:nth-child(4) {
-  width: 220px;
+  width: 180px;
 }
 
 .data-table--touchpoint-list th:nth-child(5),
